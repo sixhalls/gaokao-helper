@@ -930,7 +930,7 @@ function updateScoreUI() {
   document.getElementById('advisorTitle').textContent =
     `${MY_SCORE}分 + 物化地 + 男生 + 家境一般 = 20+志愿精准填满`;
   document.getElementById('advisorBody').innerHTML = `
-    <p><span class="text-yellow-400 font-medium">核心策略：</span>30个平行志愿是30发子弹，一发都不能浪费。${MY_SCORE}分差特招线${MY_SCORE-568}分，精准锁定省外公办二本工科专业组。</p>
+    <p><span class="text-yellow-400 font-medium">核心策略：</span>30个平行志愿是30发子弹，一发都不能浪费。${MY_SCORE>=568?'超特招线':MY_SCORE>=479?'稳在本科线以上':'压线区'}，精准锁定省外公办二本工科专业组。</p>
     <p><span class="text-yellow-400 font-medium">冲8所（${rushMin}-${rushMax}）：</span>省外公办工科的物化组，录了赚到，没录不亏。</p>
     <p><span class="text-yellow-400 font-medium">稳8-10所（${stableMin}-${stableMax}）：</span>核心阵地，录取概率50-80%，${MY_SCORE}分在这里最稳。</p>
     <p><span class="text-yellow-400 font-medium">保5-6所（&lt;${safeMax}）：</span>公办保底，${MY_SCORE}分进去有余量，不至于滑档。</p>
