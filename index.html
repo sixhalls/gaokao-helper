@@ -159,9 +159,9 @@ tailwind.config = {
     <div class="flex items-center gap-2 flex-wrap">
       <div class="flex items-center gap-1">
         <span class="text-[10px] text-gray-500">分数</span>
-        <input type="number" id="fMin" value="480" class="w-14 border rounded px-1.5 py-1 text-xs text-center">
+        <input type="number" id="fMin" value="" placeholder="低" class="w-14 border rounded px-1.5 py-1 text-xs text-center" oninput="this.dataset.auto='0'">
         <span class="text-gray-300 text-xs">~</span>
-        <input type="number" id="fMax" value="537" class="w-14 border rounded px-1.5 py-1 text-xs text-center">
+        <input type="number" id="fMax" value="" placeholder="高" class="w-14 border rounded px-1.5 py-1 text-xs text-center" oninput="this.dataset.auto='0'">
       </div>
       <select id="fRegion" class="border rounded px-2 py-1 text-xs" onchange="onFilterChange()">
         <option value="all">全部地区</option>
@@ -1065,6 +1065,20 @@ function updateScoreUI() {
   document.getElementById('locAboveLine').textContent = aboveLine >= 0 ? '+' + aboveLine : aboveLine;
   document.getElementById('locRank').textContent = rank;
 
+  // 动态设置筛选分数区间（仅首次或用户未手动修改时）
+  const fMinEl = document.getElementById('fMin');
+  const fMaxEl = document.getElementById('fMax');
+  if (!fMinEl.value || fMinEl.dataset.auto === '1') {
+    fMinEl.value = MY_SCORE - 50;
+    fMinEl.dataset.auto = '1';
+  }
+  if (!fMaxEl.value || fMaxEl.dataset.auto === '1') {
+    // 冲区间上限：数据库中最高分冲校
+    const maxRush = SCHOOLS.reduce((m, s) => s.tier === 'rush' && s.s25 > m ? s.s25 : m, 0);
+    fMaxEl.value = maxRush > MY_SCORE ? maxRush + 2 : MY_SCORE + 25;
+    fMaxEl.dataset.auto = '1';
+  }
+
   // 军师建议标题和内容
   const rushMin = MY_SCORE + 1;
   const rushMax = MY_SCORE + 30;
@@ -1087,8 +1101,8 @@ function updateScoreUI() {
 //  筛选
 // ============================================================
 function getFiltered() {
-  const fMin = +document.getElementById('fMin').value || 480;
-  const fMax = +document.getElementById('fMax').value || 537;
+  const fMin = +document.getElementById('fMin').value || (MY_SCORE - 50);
+  const fMax = +document.getElementById('fMax').value || (MY_SCORE + 25);
   const region = document.getElementById('fRegion').value;
   const typeFilter = document.getElementById('fType').value;
   const tierFilter = document.getElementById('fTier').value;
