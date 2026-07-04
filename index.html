@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>工科就业选校器 - 海南524物化地</title>
+  <title>工科就业选校器 - 海南物化地</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <script>
@@ -55,7 +55,7 @@ tailwind.config = {
       <div class="w-7 h-7 bg-blue-600 rounded flex items-center justify-center text-white text-xs font-bold">工</div>
       <div class="leading-tight">
         <h1 class="text-sm font-bold text-gray-900">工科就业选校器</h1>
-        <p class="text-[10px] text-gray-400">海南 · 524分 · 物化地 · 男生</p>
+        <p class="text-[10px] text-gray-400">海南 · <span id="headerScore">524</span>分 · 物化地 · 男生</p>
       </div>
     </div>
     <div class="flex items-center gap-2">
@@ -63,7 +63,7 @@ tailwind.config = {
         <input type="checkbox" id="familyMode" checked onchange="onFilterChange()" class="rounded text-blue-600 w-3.5 h-3.5">
         <span>家境模式</span>
       </label>
-      <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-semibold" id="scoreBadge">524</span>
+      <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-semibold cursor-pointer" id="scoreBadge" onclick="editScore()" title="点击修改分数">524</span>
     </div>
   </div>
   <!-- 桌面标签 -->
@@ -87,15 +87,15 @@ tailwind.config = {
     </div>
     <div class="grid grid-cols-3 gap-3 mb-4">
       <div class="bg-blue-50 rounded-lg p-3 text-center">
-        <div class="text-xl font-bold text-blue-700">524</div>
+        <div class="text-xl font-bold text-blue-700" id="locScore">524</div>
         <div class="text-[10px] text-blue-500">总分</div>
       </div>
       <div class="bg-green-50 rounded-lg p-3 text-center">
-        <div class="text-xl font-bold text-green-700">+38</div>
+        <div class="text-xl font-bold text-green-700" id="locAboveLine">+38</div>
         <div class="text-[10px] text-green-500">超本科线479</div>
       </div>
       <div class="bg-yellow-50 rounded-lg p-3 text-center">
-        <div class="text-xl font-bold text-yellow-700">3.4万</div>
+        <div class="text-xl font-bold text-yellow-700" id="locRank">3.4万</div>
         <div class="text-[10px] text-yellow-500">约排位次</div>
       </div>
     </div>
@@ -118,8 +118,8 @@ tailwind.config = {
       <h2 class="text-base font-bold">军师判定</h2>
     </div>
     <div class="space-y-3 text-sm leading-relaxed">
-      <p class="text-yellow-300 font-semibold">524分 + 物化地 + 男生 + 家境一般 = 20+志愿精准填满</p>
-      <div class="bg-white/10 rounded-lg p-3 space-y-2 text-gray-200">
+      <p class="text-yellow-300 font-semibold" id="advisorTitle">524分 + 物化地 + 男生 + 家境一般 = 20+志愿精准填满</p>
+      <div class="bg-white/10 rounded-lg p-3 space-y-2 text-gray-200" id="advisorBody">
         <p><span class="text-yellow-400 font-medium">核心策略：</span>30个平行志愿是30发子弹，一发都不能浪费。524分差特招线44分，够不到211，但能精准锁死省外公办二本的工科专业组。</p>
         <p><span class="text-yellow-400 font-medium">冲5-6所（525-537）：</span>省外公办工科的物化组，如重庆文理学院、贵州理工、沈阳建筑大学。录了赚到，没录不亏。</p>
         <p><span class="text-yellow-400 font-medium">稳8-10所（505-524）：</span>核心阵地。中部和珠三角工科强校的物化组，如湖北理工、长江师范、韶关学院。524分在这里最稳。</p>
@@ -830,14 +830,17 @@ function subReqBadge(req) {
 }
 
 // 冲稳保判定(用2025实际分)
-// diff = 学校分 - 524：>0冲，-12~0稳，<-12保
+// diff = 学校分 - MY_SCORE：>0冲，-12~0稳，<-12保
 function tierOf(score25) {
-  const diff = score25 - 524;
+  const diff = score25 - MY_SCORE;
   if (diff > 0 && diff <= 20) return 'rush';
   if (diff >= -12 && diff <= 0) return 'stable';
   return 'safe';
 }
-S.forEach(s => { s.tier = tierOf(s.s25); });
+function recalcTiers() {
+  S.forEach(s => { s.tier = tierOf(s.s25); });
+}
+recalcTiers();
 
 // 年度趋势渲染
 function yearTrendHTML(s) {
@@ -873,12 +876,62 @@ function yearTrendHTML(s) {
   return parts.join(' ');
 }
 
-const MY_SCORE = 524;
+let MY_SCORE = parseInt(localStorage.getItem('gk_score')) || 524;
 
 // 状态
 let sortMode = 'idx'; // idx | score | cost
 let compareIds = [];
 let planSlots = new Array(30).fill(null); // {id,name,tier,idx,s25,type,fee}
+
+// 分数修改
+function editScore() {
+  const input = prompt('请输入你的高考总分：', MY_SCORE);
+  if (input === null) return;
+  const score = parseInt(input);
+  if (isNaN(score) || score < 300 || score > 750) { toast('分数无效(300-750)'); return; }
+  MY_SCORE = score;
+  localStorage.setItem('gk_score', score);
+  recalcTiers();
+  updateScoreUI();
+  onFilterChange();
+  toast('分数已更新为 ' + score);
+}
+
+function updateScoreUI() {
+  const aboveLine = MY_SCORE - 479;
+  // 简易排位估算（海南标准分粗略映射）
+  let rank;
+  if (MY_SCORE >= 600) rank = '0.8万';
+  else if (MY_SCORE >= 560) rank = '1.5万';
+  else if (MY_SCORE >= 540) rank = '2.2万';
+  else if (MY_SCORE >= 520) rank = '3.4万';
+  else if (MY_SCORE >= 500) rank = '4.5万';
+  else if (MY_SCORE >= 480) rank = '5.8万';
+  else rank = '6.5万+';
+
+  document.getElementById('scoreBadge').textContent = MY_SCORE;
+  document.getElementById('headerScore').textContent = MY_SCORE;
+  document.getElementById('locScore').textContent = MY_SCORE;
+  document.getElementById('locAboveLine').textContent = aboveLine >= 0 ? '+' + aboveLine : aboveLine;
+  document.getElementById('locRank').textContent = rank;
+
+  // 军师建议标题和内容
+  const rushMin = MY_SCORE + 1;
+  const rushMax = MY_SCORE + 20;
+  const stableMin = MY_SCORE - 12;
+  const stableMax = MY_SCORE;
+  const safeMax = MY_SCORE - 13;
+  document.getElementById('advisorTitle').textContent =
+    `${MY_SCORE}分 + 物化地 + 男生 + 家境一般 = 20+志愿精准填满`;
+  document.getElementById('advisorBody').innerHTML = `
+    <p><span class="text-yellow-400 font-medium">核心策略：</span>30个平行志愿是30发子弹，一发都不能浪费。${MY_SCORE}分差特招线${MY_SCORE-568}分，精准锁定省外公办二本工科专业组。</p>
+    <p><span class="text-yellow-400 font-medium">冲8所（${rushMin}-${rushMax}）：</span>省外公办工科的物化组，录了赚到，没录不亏。</p>
+    <p><span class="text-yellow-400 font-medium">稳8-10所（${stableMin}-${stableMax}）：</span>核心阵地，录取概率50-80%，${MY_SCORE}分在这里最稳。</p>
+    <p><span class="text-yellow-400 font-medium">保5-6所（&lt;${safeMax}）：</span>公办保底，${MY_SCORE}分进去有余量，不至于滑档。</p>
+    <p><span class="text-yellow-400 font-medium">选科硬约束：</span>物化地不能报考"物化生"专业组，但897个"物化"专业组任你选。本工具已标注每校选科代码，红标"物化生"的慎选。</p>
+    <p><span class="text-red-400 font-medium">铁律：</span>必须勾选"服从调剂"！一轮投档滑档=白考。先上车再换座。</p>
+  `;
+}
 
 // ============================================================
 //  筛选
@@ -1010,10 +1063,10 @@ function renderAdvisor() {
   const stable = pool.filter(s => s.tier === 'stable').sort((a,b) => b.idx - a.idx);
   const safe = pool.filter(s => s.tier === 'safe').sort((a,b) => b.idx - a.idx);
 
-  // 智能推荐：冲5-6 + 稳8-10 + 保5-6
+  // 智能推荐：冲8 + 稳8-10 + 保5-6
   const pick = [];
-  // 冲：取就业指数最高的5-6所
-  pick.push(...rush.slice(0, Math.min(6, rush.length)));
+  // 冲：取就业指数最高的8所
+  pick.push(...rush.slice(0, Math.min(8, rush.length)));
   // 稳：取就业指数最高的8-10所
   pick.push(...stable.slice(0, Math.min(10, stable.length)));
   // 保：取就业指数最高的5-6所
@@ -1031,7 +1084,7 @@ function renderAdvisor() {
             <span class="text-xs text-gray-500">录取概率10-40%，搏一把</span>
           </div>
           <div class="space-y-1.5">
-            ${rush.slice(0,6).map(s => strategyCard(s)).join('')}
+            ${rush.slice(0,8).map(s => strategyCard(s)).join('')}
           </div>
         </div>` : ''}
         ${stable.length ? `
@@ -1094,7 +1147,7 @@ function applyAdvisorPlan() {
   const stable = pool.filter(s=>s.tier==='stable').sort((a,b)=>b.idx-a.idx);
   const safe = pool.filter(s=>s.tier==='safe').sort((a,b)=>b.idx-a.idx);
 
-  for (let i = 0; i < Math.min(6, rush.length) && pos < 30; i++)
+  for (let i = 0; i < Math.min(8, rush.length) && pos < 30; i++)
     planSlots[pos++] = toPlanItem(rush[i]);
   for (let i = 0; i < Math.min(10, stable.length) && pos < 30; i++)
     planSlots[pos++] = toPlanItem(stable[i]);
@@ -1439,7 +1492,7 @@ function renderPlan() {
     const avgIdx = (filled.reduce((s,p)=>s+p.idx,0)/filled.length).toFixed(1);
     reasonText.innerHTML = `
       <p>本方案采用 <strong>冲${rushN}+稳${stableN}+保${safeN}</strong> 结构，聚焦就业效率最大化。</p>
-      <p><strong>结构合理性：</strong>${rushN>=5&&rushN<=6?'冲的志愿合理(5-6所)':'冲的志愿建议调整到5-6所'}；${stableN>=8?'稳的志愿充足，主力覆盖到位':'稳的志愿不足，建议增加至8-10所'}；${safeN>=5?'保底充足，兜底保障到位':'保底不够(需5-6所)，滑档风险高'}。</p>
+      <p><strong>结构合理性：</strong>${rushN>=5&&rushN<=8?'冲的志愿合理(5-8所)':'冲的志愿建议调整到5-8所'}；${stableN>=8?'稳的志愿充足，主力覆盖到位':'稳的志愿不足，建议增加至8-10所'}；${safeN>=5?'保底充足，兜底保障到位':'保底不够(需5-6所)，滑档风险高'}。</p>
       <p><strong>经济性：</strong>公办${pubN}所${filled.length-pubN>0?'，民办'+(filled.length-pubN)+'所(高学费)':''}。方案平均就业指数${avgIdx}。</p>
       <p><strong>核心建议：</strong>务必勾选"服从调剂"。一轮投档滑档=白考，进校后转专业比复读划算。先上车再换座。</p>
     `;
@@ -1451,7 +1504,7 @@ function renderPlan() {
 function exportPlan() {
   const filled = planSlots.filter(p => p !== null);
   if (!filled.length) { toast('方案为空'); return; }
-  let txt = `高考志愿方案 | 海南524分 物化地 男生\n`;
+  let txt = `高考志愿方案 | 海南${MY_SCORE}分 物化地 男生\n`;
   txt += `导出时间: ${new Date().toLocaleString()}\n`;
   txt += `${'='.repeat(40)}\n\n`;
   planSlots.forEach((p,i) => {
@@ -1464,7 +1517,7 @@ function exportPlan() {
   const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `志愿方案_524分_${new Date().toISOString().slice(0,10)}.txt`;
+  a.download = `志愿方案_${MY_SCORE}分_${new Date().toISOString().slice(0,10)}.txt`;
   a.click();
   toast('已导出');
 }
@@ -1508,6 +1561,7 @@ function loadPlan() {
 // ============================================================
 loadPlan();
 document.getElementById('fType').value = 'public'; // 默认仅公办
+updateScoreUI();
 renderAdvisor();
 renderList();
 renderPlan();
