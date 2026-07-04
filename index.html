@@ -181,6 +181,18 @@ tailwind.config = {
         <option value="stable">稳</option>
         <option value="safe">保</option>
       </select>
+      <select id="fCat" class="border rounded px-2 py-1 text-xs" onchange="onFilterChange()">
+        <option value="all">全部专业</option>
+        <option value="mech">机械制造</option>
+        <option value="elec">电气能源</option>
+        <option value="cs">计算机/AI</option>
+        <option value="mat">材料化工</option>
+        <option value="civ">土木建筑</option>
+        <option value="med">医护健康</option>
+        <option value="tech">动手技工</option>
+        <option value="edu">师范教育</option>
+        <option value="biz">经管法</option>
+      </select>
     </div>
     <div class="flex items-center justify-between text-[11px] text-gray-500">
       <span>共 <strong id="listCount" class="text-blue-600">0</strong> 所 ·
@@ -750,6 +762,62 @@ function calcIdx(dim) {
 // 给每条记录预计算
 S.forEach(s => { s.idx = calcIdx(s.dim); });
 
+// ============================================================
+//  专业分类体系
+// ============================================================
+const CATS = {
+  mech:   { label:'机械制造', icon:'⚙️', color:'bg-red-50 text-red-700 border-red-100',  badge:'bg-red-100 text-red-700' },
+  elec:   { label:'电气能源', icon:'⚡', color:'bg-amber-50 text-amber-700 border-amber-100', badge:'bg-amber-100 text-amber-700' },
+  cs:     { label:'计算机/AI', icon:'💻', color:'bg-blue-50 text-blue-700 border-blue-100',  badge:'bg-blue-100 text-blue-700' },
+  mat:    { label:'材料化工', icon:'🧪', color:'bg-purple-50 text-purple-700 border-purple-100', badge:'bg-purple-100 text-purple-700' },
+  civ:    { label:'土木建筑', icon:'🏗️', color:'bg-orange-50 text-orange-700 border-orange-100', badge:'bg-orange-100 text-orange-700' },
+  med:    { label:'医护健康', icon:'🏥', color:'bg-pink-50 text-pink-700 border-pink-100',   badge:'bg-pink-100 text-pink-700' },
+  tech:   { label:'动手技工', icon:'🔧', color:'bg-teal-50 text-teal-700 border-teal-100',  badge:'bg-teal-100 text-teal-700' },
+  edu:    { label:'师范教育', icon:'📚', color:'bg-gray-50 text-gray-600 border-gray-200',   badge:'bg-gray-100 text-gray-600' },
+  biz:    { label:'经管法', icon:'💼', color:'bg-lime-50 text-lime-700 border-lime-100',    badge:'bg-lime-100 text-lime-700' },
+};
+
+// 专业名 → 类别映射（模糊匹配）
+const MAJOR_MAP = [
+  // 机械制造
+  { re: /机械|车辆|飞行器|纺织|智能制造|自动化/, cat: 'mech' },
+  // 电气能源
+  { re: /电气|能源与动力|水利|采矿|石油|安全工程|能动/, cat: 'elec' },
+  // 计算机/AI
+  { re: /计算机|软件|电子信息|通信|人工智能|数据|数学应用|数学与|物理/, cat: 'cs' },
+  // 材料化工（化学工程在前，化学在后，保证更具体的先匹配）
+  { re: /材料|冶金|化工|化学工程|化学|轻化|制药/, cat: 'mat' },
+  // 土木建筑
+  { re: /土木|建筑|城乡规划|给排水|测绘|造价|建筑环境|交通运输|交通|环境/, cat: 'civ' },
+  // 医护健康
+  { re: /临床|麻醉|影像|药学|预防医学|护理|中医|医学/, cat: 'med' },
+  // 动手技工
+  { re: /船舶|食品|水产|地质|包装|生物|海洋科学|海洋工程|物流|地理/, cat: 'tech' },
+  // 师范教育
+  { re: /小学教育|学前教育|教育/, cat: 'edu' },
+  // 经管法兜底（法学、会计等经管类专业）
+  { re: /法学|会计|管理|经济|金融|财务|旅游/, cat: 'biz' },
+];
+
+function getMajorCat(major) {
+  for (const m of MAJOR_MAP) { if (m.re.test(major)) return m.cat; }
+  return null; // 未匹配
+}
+
+// 给每所学校计算 majorCats 数组（去重）
+S.forEach(s => {
+  const cats = new Set();
+  s.majors.forEach(m => { const c = getMajorCat(m); if (c) cats.add(c); });
+  s.majorCats = [...cats];
+});
+
+// 专业类别标签渲染
+function majorCatBadge(cat) {
+  const c = CATS[cat];
+  if (!c) return '';
+  return `<span class="text-[9px] px-1 py-0.5 rounded ${c.badge}">${c.label}</span>`;
+}
+
 // 选科要求标签
 function subReqBadge(req) {
   if (req === '54') return '<span class="text-[10px] px-1 py-0.5 rounded bg-orange-50 text-orange-700">物+化</span>';
@@ -786,6 +854,7 @@ function getFiltered() {
   const region = document.getElementById('fRegion').value;
   const typeFilter = document.getElementById('fType').value;
   const tierFilter = document.getElementById('fTier').value;
+  const catFilter = document.getElementById('fCat').value;
   const familyMode = document.getElementById('familyMode').checked;
 
   let list = S.filter(s => {
@@ -793,6 +862,7 @@ function getFiltered() {
     if (region !== 'all' && s.regionTag !== region) return false;
     if (typeFilter === 'public' && s.type !== 'public') return false;
     if (tierFilter !== 'all' && s.tier !== tierFilter) return false;
+    if (catFilter !== 'all' && !s.majorCats.includes(catFilter)) return false;
     if (familyMode && s.type === 'private') return false;
     // 家境模式也过滤中外合作(通过fee判断)
     if (familyMode && s.fee > 15000) return false;
@@ -864,7 +934,7 @@ function renderList() {
             <span class="text-[10px] px-1.5 py-0.5 rounded ${tierTag} font-semibold">${tierLabel}</span>
             ${s.type==='public'?'<span class="text-[10px] px-1.5 py-0.5 rounded bg-green-100 text-green-700 font-medium">公办</span>':'<span class="text-[10px] px-1.5 py-0.5 rounded bg-gray-200 text-gray-600 font-medium">民办</span>'}
           </div>
-          <div class="text-[10px] text-gray-400 mt-0.5">${s.prov}·${s.city} · ${s.fee>=10000?(s.fee/10000)+'万/年':s.fee+'元/年'}</div>
+          <div class="text-[10px] text-gray-400 mt-0.5">${s.prov}·${s.city} · ${s.fee>=10000?(s.fee/10000)+'万/年':s.fee+'元/年'} · ${s.majorCats.map(c => CATS[c]?.label||'').filter(Boolean).join('/')}</div>
         </div>
         <div class="text-right ml-2">
           <div class="text-lg font-bold text-yellow-600">${s.idx}</div>
@@ -957,12 +1027,16 @@ function renderAdvisor() {
 
 function strategyCard(s) {
   const tierColor = s.tier==='rush' ? 'border-red-400' : s.tier==='stable' ? 'border-green-400' : 'border-blue-400';
+  const catTags = s.majorCats.map(c => majorCatBadge(c)).join('');
   return `
     <div class="strategy-card ${tierColor} bg-gray-50 rounded-r-lg p-2.5" onclick="showDetail(${s.id})">
       <div class="flex items-center justify-between">
-        <div>
-          <span class="text-xs font-bold">${s.name}</span>
-          <span class="text-[10px] text-gray-400 ml-1">${s.prov}·${s.city}</span>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1">
+            <span class="text-xs font-bold">${s.name}</span>
+            <span class="text-[10px] text-gray-400">${s.prov}·${s.city}</span>
+          </div>
+          <div class="flex items-center gap-1 mt-0.5">${catTags}</div>
         </div>
         <div class="text-xs font-bold text-yellow-600">${s.idx}</div>
       </div>
@@ -1069,7 +1143,11 @@ function showDetail(id) {
 
     <div>
       <h4 class="text-xs font-bold mb-1">可选专业</h4>
-      <div class="flex flex-wrap gap-1.5">${s.majors.map(m => `<span class="text-[10px] px-2 py-0.5 bg-gray-100 rounded">${m}</span>`).join('')}</div>
+      <div class="flex flex-wrap gap-1.5">${s.majors.map(m => {
+        const cat = getMajorCat(m);
+        const cls = cat && CATS[cat] ? CATS[cat].color : 'bg-gray-100 text-gray-600 border-gray-200';
+        return `<span class="text-[10px] px-2 py-0.5 rounded border ${cls}">${m}</span>`;
+      }).join('')}</div>
     </div>
 
     <div>
