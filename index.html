@@ -3,9 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
   <title>工科就业选校器 - 海南物化地</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.tailwindcss.com?v=6"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4?v=6"></script>
 <script>
 tailwind.config = {
   theme: {
@@ -193,6 +196,7 @@ tailwind.config = {
         <option value="edu">师范教育</option>
         <option value="biz">经管法</option>
       </select>
+      <input type="text" id="fSearch" placeholder="搜索校名/省份/城市" class="border rounded px-2 py-1 text-xs w-32" oninput="onFilterChange()">
     </div>
     <div class="flex items-center justify-between text-[11px] text-gray-500">
       <span>共 <strong id="listCount" class="text-blue-600">0</strong> 所 ·
@@ -1090,6 +1094,7 @@ function getFiltered() {
   const tierFilter = document.getElementById('fTier').value;
   const catFilter = document.getElementById('fCat').value;
   const familyMode = document.getElementById('familyMode').checked;
+  const searchKey = (document.getElementById('fSearch').value || '').trim().toLowerCase();
 
   let list = S.filter(s => {
     if (s.s25 < fMin || s.s25 > fMax) return false;
@@ -1098,8 +1103,12 @@ function getFiltered() {
     if (tierFilter !== 'all' && s.tier !== tierFilter) return false;
     if (catFilter !== 'all' && !s.majorCats.includes(catFilter)) return false;
     if (familyMode && s.type === 'private') return false;
-    // 家境模式也过滤中外合作(通过fee判断)
     if (familyMode && s.fee > 15000) return false;
+    // 搜索过滤
+    if (searchKey) {
+      const hay = (s.name + s.prov + s.city + s.majors.join('')).toLowerCase();
+      if (!hay.includes(searchKey)) return false;
+    }
     return true;
   });
 
