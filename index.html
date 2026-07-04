@@ -899,15 +899,20 @@ function editScore() {
 
 function updateScoreUI() {
   const aboveLine = MY_SCORE - 479;
-  // 简易排位估算（海南标准分粗略映射）
+  // 排位估算（基于海南2025标准分-排位映射）
   let rank;
-  if (MY_SCORE >= 600) rank = '0.8万';
-  else if (MY_SCORE >= 560) rank = '1.5万';
-  else if (MY_SCORE >= 540) rank = '2.2万';
-  else if (MY_SCORE >= 520) rank = '3.4万';
-  else if (MY_SCORE >= 500) rank = '4.5万';
-  else if (MY_SCORE >= 480) rank = '5.8万';
-  else rank = '6.5万+';
+  if (MY_SCORE >= 620) rank = '0.5万';
+  else if (MY_SCORE >= 590) rank = '1.0万';
+  else if (MY_SCORE >= 568) rank = '1.5万';
+  else if (MY_SCORE >= 550) rank = '2.0万';
+  else if (MY_SCORE >= 540) rank = '2.4万';
+  else if (MY_SCORE >= 530) rank = '2.7万';
+  else if (MY_SCORE >= 524) rank = '3.0万';
+  else if (MY_SCORE >= 510) rank = '3.6万';
+  else if (MY_SCORE >= 500) rank = '4.2万';
+  else if (MY_SCORE >= 490) rank = '4.8万';
+  else if (MY_SCORE >= 479) rank = '5.5万';
+  else rank = '6.0万+';
 
   document.getElementById('scoreBadge').textContent = MY_SCORE;
   document.getElementById('headerScore').textContent = MY_SCORE;
