@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>工科就业选校器 - 海南517物化地</title>
+<title>工科就业选校器 - 海南524物化地</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <script>
@@ -55,7 +55,7 @@ tailwind.config = {
       <div class="w-7 h-7 bg-blue-600 rounded flex items-center justify-center text-white text-xs font-bold">工</div>
       <div class="leading-tight">
         <h1 class="text-sm font-bold text-gray-900">工科就业选校器</h1>
-        <p class="text-[10px] text-gray-400">海南 · 517分 · 物化地 · 男生</p>
+        <p class="text-[10px] text-gray-400">海南 · 524分 · 物化地 · 男生</p>
       </div>
     </div>
     <div class="flex items-center gap-2">
@@ -63,7 +63,7 @@ tailwind.config = {
         <input type="checkbox" id="familyMode" checked onchange="onFilterChange()" class="rounded text-blue-600 w-3.5 h-3.5">
         <span>家境模式</span>
       </label>
-      <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-semibold" id="scoreBadge">517</span>
+      <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-semibold" id="scoreBadge">524</span>
     </div>
   </div>
   <!-- 桌面标签 -->
@@ -87,7 +87,7 @@ tailwind.config = {
     </div>
     <div class="grid grid-cols-3 gap-3 mb-4">
       <div class="bg-blue-50 rounded-lg p-3 text-center">
-        <div class="text-xl font-bold text-blue-700">517</div>
+        <div class="text-xl font-bold text-blue-700">524</div>
         <div class="text-[10px] text-blue-500">总分</div>
       </div>
       <div class="bg-green-50 rounded-lg p-3 text-center">
@@ -118,12 +118,12 @@ tailwind.config = {
       <h2 class="text-base font-bold">军师判定</h2>
     </div>
     <div class="space-y-3 text-sm leading-relaxed">
-      <p class="text-yellow-300 font-semibold">517分 + 物化地 + 男生 + 家境一般 = 20+志愿精准填满</p>
+      <p class="text-yellow-300 font-semibold">524分 + 物化地 + 男生 + 家境一般 = 20+志愿精准填满</p>
       <div class="bg-white/10 rounded-lg p-3 space-y-2 text-gray-200">
-        <p><span class="text-yellow-400 font-medium">核心策略：</span>30个平行志愿是30发子弹，一发都不能浪费。517分差特招线51分，够不到211，但能精准锁死省外公办二本的工科专业组。</p>
+        <p><span class="text-yellow-400 font-medium">核心策略：</span>30个平行志愿是30发子弹，一发都不能浪费。524分差特招线44分，够不到211，但能精准锁死省外公办二本的工科专业组。</p>
         <p><span class="text-yellow-400 font-medium">冲5-6所（525-537）：</span>省外公办工科的物化组，如重庆文理学院、贵州理工、沈阳建筑大学。录了赚到，没录不亏。</p>
-        <p><span class="text-yellow-400 font-medium">稳8-10所（505-524）：</span>核心阵地。中部和珠三角工科强校的物化组，如湖北理工、长江师范、韶关学院。517分在这里最稳。</p>
-        <p><span class="text-yellow-400 font-medium">保5-6所（&lt;505）：</span>成都工业学院、广西科技大学、琼台师范学院、湖北民族大学等公办保底，517分进去有余量。铁保底菏泽学院、陇东学院，37分余量怎么都滑不掉。</p>
+        <p><span class="text-yellow-400 font-medium">稳8-10所（505-524）：</span>核心阵地。中部和珠三角工科强校的物化组，如湖北理工、长江师范、韶关学院。524分在这里最稳。</p>
+        <p><span class="text-yellow-400 font-medium">保5-6所（&lt;505）：</span>成都工业学院、广西科技大学、琼台师范学院、湖北民族大学等公办保底，524分进去有余量。铁保底菏泽学院、陇东学院，37分余量怎么都滑不掉。</p>
         <p><span class="text-yellow-400 font-medium">选科硬约束：</span>物化地不能报考"物化生"专业组，但897个"物化"专业组任你选。本工具已标注每校选科代码，红标"物化生"的慎选。</p>
         <p><span class="text-red-400 font-medium">铁律：</span>必须勾选"服从调剂"！一轮投档滑档=白考。先上车再换座。</p>
       </div>
@@ -310,461 +310,444 @@ tailwind.config = {
 //  数据层 —— 每校5维度就业评分(1-10) + 录取数据 + 学费
 // ============================================================
 const S = [
-  // ---- 冲 (518~537) ----
-  { id:1, name:"天津科技大学", prov:"天津", city:"天津", type:"public", regionTag:"环渤海",
+  { id:1, name:"天津科技大学", prov:"天津", city:"天津", type:"public", regionTag:"新一线",
     tier:"rush",
-    s25:533, s24:526, s23:519, r25:28500,
+    s25:533, s24:521, s23:null, r25:34800,
     sub:["物理+化学"], subReq:"54",
-    majors:["食品科学与工程","生物工程","轻化工程","包装工程"],
-    fee:5400, empRate:0.85,
+    majors:["食品科学与工程", "生物工程", "海洋科学", "化学工程与工艺", "包装工程"],
+    fee:5400, empRate:0.88,
     dim:{ emp:8, salary:7, industry:7, region:8, cost:8 },
-    why:"天津轻工强校，食品和生物工程业内认可度高，京津冀就业渠道畅通。学费适中，冲一冲值得。",
-    intro:"天津市属重点高校，轻工食品为传统优势，生物工程近年发展快。" },
+    why:"天津区位+食品/海洋强项，54组533分冲一把。学费低，就业对接京津冀。",
+    intro:"天津市属重点高校，食品科学与工程为国家级特色专业，海洋科学学科实力强。" },
 
-  { id:2, name:"河北工程大学", prov:"河北", city:"邯郸", type:"public", regionTag:"环渤海",
+  { id:2, name:"河北工程大学", prov:"河北", city:"邯郸", type:"public", regionTag:"二线",
     tier:"rush",
-    s25:533, s24:526, s23:519, r25:28500,
+    s25:533, s24:549, s23:581, r25:34800,
     sub:["物理+化学"], subReq:"54",
-    majors:["土木工程","采矿工程","机械工程","电气工程"],
-    fee:5500, empRate:0.82,
-    dim:{ emp:7, salary:6, industry:7, region:5, cost:9 },
-    why:"土木采矿老牌，电气工程可考国网。邯郸偏远但工科硬核，学费低性价比高。",
-    intro:"河北省属工科院校，土木和采矿为传统优势，电气工程近年就业向好。" },
+    majors:["土木工程", "机械工程", "电气工程", "采矿工程"],
+    fee:5200, empRate:0.84,
+    dim:{ emp:7, salary:5, industry:6, region:4, cost:9 },
+    why:"土木机械传统强校，54组533分冲。24年549→25年533大跌16分，今年是窗口期。",
+    intro:"河北省属骨干大学，土木工程和采矿工程传统优势，工科底蕴深厚。" },
 
-  { id:3, name:"烟台大学", prov:"山东", city:"烟台", type:"public", regionTag:"环渤海",
+  { id:3, name:"烟台大学", prov:"山东", city:"烟台", type:"public", regionTag:"二线",
     tier:"rush",
-    s25:533, s24:526, s23:519, r25:28500,
-    sub:["仅物理","物理+化学"], subReq:"4",
-    majors:["计算机科学","电子信息工程","机械工程","土木工程"],
-    fee:5200, empRate:0.86,
-    dim:{ emp:7, salary:7, industry:7, region:7, cost:8 },
-    why:"烟台沿海城市，计算机和电子信息对接胶东半岛IT产业。仅物理组竞争略大但专业选择面宽。",
-    intro:"山东省属综合院校，计算机和法学为优势，烟台宜居城市。" },
+    s25:533, s24:594, s23:587, r25:34800,
+    sub:["仅物理"], subReq:"4",
+    majors:["法学", "计算机科学与技术", "药学", "生物科学"],
+    fee:5200, empRate:0.85,
+    dim:{ emp:7, salary:6, industry:7, region:7, cost:8 },
+    why:"烟台海滨城市区位好，4组仅物理可报。24年594→25年533暴跌61分！极罕见窗口。",
+    intro:"山东省属综合大学，法学为王牌，药学与计算机也有实力。" },
 
-  { id:4, name:"赣南科技学院", prov:"江西", city:"赣州", type:"public", regionTag:"新一线",
+  { id:4, name:"赣南科技学院", prov:"江西", city:"赣州", type:"public", regionTag:"三线",
     tier:"rush",
-    s25:530, s24:523, s23:516, r25:30000,
+    s25:530, s24:484, s23:null, r25:35500,
     sub:["物理+化学"], subReq:"54",
-    majors:["机械工程","电气工程","计算机科学","冶金工程"],
-    fee:4800, empRate:0.80,
-    dim:{ emp:7, salary:5, industry:7, region:4, cost:10 },
-    why:"赣州稀土产业带，冶金工程对口就业稳。学费极低，工科硬核但赣州偏远。",
-    intro:"江西省属工科院校，冶金和机械为特色，对接赣州稀土及有色金属产业。" },
-
-  { id:5, name:"南阳理工学院", prov:"河南", city:"南阳", type:"public", regionTag:"中部",
-    tier:"rush",
-    s25:529, s24:522, s23:515, r25:30500,
-    sub:["物理+化学"], subReq:"54",
-    majors:["机械工程","计算机科学","电子信息工程","中医学"],
-    fee:5000, empRate:0.80,
-    dim:{ emp:7, salary:5, industry:6, region:4, cost:10 },
-    why:"机械和中医双特色，南阳中医药产业有基础。工科学费低，偏远但性价比可。",
-    intro:"河南省属应用型院校，机械工程和中医学为特色，南阳地方产业对接。" },
-
-  { id:6, name:"鲁东大学", prov:"山东", city:"烟台", type:"public", regionTag:"环渤海",
-    tier:"rush",
-    s25:528, s24:521, s23:514, r25:31000,
-    sub:["物理+化学"], subReq:"54",
-    majors:["食品工程","生物工程","化学","船舶与海洋工程"],
-    fee:5200, empRate:0.82,
-    dim:{ emp:7, salary:6, industry:6, region:6, cost:9 },
-    why:"烟台沿海，食品和船舶方向有地域产业支撑。化学类需慎重，船舶方向前景可期。",
-    intro:"山东省属综合院校，食品科学与海洋方向为特色，烟台沿海产业支撑。" },
-
-  { id:7, name:"百色学院", prov:"广西", city:"百色", type:"public", regionTag:"新一线",
-    tier:"rush",
-    s25:527, s24:520, s23:513, r25:41000,
-    sub:["物理+化学","物理+不限"], subReq:"54",
-    majors:["电子信息工程","材料科学与工程","旅游管理","数学与应用数学"],
-    fee:4600, empRate:0.75,
-    dim:{ emp:5, salary:4, industry:4, region:3, cost:10 },
-    why:"54组分数虚高，实际百色偏远就业差。学费最低是唯一优势，冲54组不如选其他。",
-    intro:"广西百色公办院校，电子信息有工科方向，但地域偏远是硬伤。" },
-
-  { id:8, name:"湖南城市学院", prov:"湖南", city:"益阳", type:"public", regionTag:"中部",
-    tier:"rush",
-    s25:526, s24:519, s23:512, r25:40200,
-    sub:["物理+化学","物理+不限","物理+地理"], subReq:"54",
-    majors:["土木工程","城乡规划","工程造价","地理信息科学"],
+    majors:["机械工程", "电气工程", "计算机科学", "材料科学与工程"],
     fee:4800, empRate:0.82,
-    dim:{ emp:7, salary:5, industry:5, region:4, cost:10 },
-    why:"城乡规划+地理信息科学与物化地完美对口。土木下行但造价/规划还行，学费极低。",
-    intro:"湖南以城市建设为特色的公办院校，城乡规划和地理信息科学为优势。" },
+    dim:{ emp:7, salary:5, industry:6, region:3, cost:10 },
+    why:"赣州公办工科，学费极低。24年483→25年530暴涨46分，说明市场发现了它。",
+    intro:"江西省属理工院校，机械和电气为骨干，赣州稀土产业有支撑。" },
+
+  { id:5, name:"南阳理工学院", prov:"河南", city:"南阳", type:"public", regionTag:"三线",
+    tier:"rush",
+    s25:529, s24:510, s23:540, r25:36000,
+    sub:["物理+化学"], subReq:"54",
+    majors:["机械工程", "计算机科学", "中医学", "软件工程"],
+    fee:5000, empRate:0.83,
+    dim:{ emp:7, salary:5, industry:6, region:3, cost:9 },
+    why:"南阳公办，机械和计算机有基础，中医学是特色。24年510→25年529涨19分。",
+    intro:"河南省属理工院校，机械工程和计算机为主体，中医学方向有特色。" },
+
+  { id:6, name:"鲁东大学", prov:"山东", city:"烟台", type:"public", regionTag:"二线",
+    tier:"rush",
+    s25:528, s24:483, s23:null, r25:36200,
+    sub:["物理+化学"], subReq:"54",
+    majors:["食品科学与工程", "水产养殖学", "生物科学", "化学"],
+    fee:5200, empRate:0.84,
+    dim:{ emp:7, salary:5, industry:6, region:7, cost:8 },
+    why:"烟台公办，食品和水产有特色。54组24年仅483→25年528暴涨45分，市场修正中。",
+    intro:"山东省属综合大学，食品科学与工程、水产为传统优势，烟台海洋经济支撑强。" },
+
+  { id:7, name:"百色学院", prov:"广西", city:"百色", type:"public", regionTag:"四线",
+    tier:"rush",
+    s25:527, s24:483, s23:null, r25:36500,
+    sub:["物理+化学"], subReq:"54",
+    majors:["材料科学与工程", "电子信息工程", "食品科学", "旅游管理"],
+    fee:4600, empRate:0.78,
+    dim:{ emp:6, salary:4, industry:5, region:2, cost:10 },
+    why:"广西公办，学费最低之一。24年483→25年527暴涨44分，可能专业组变化导致。",
+    intro:"广西省属院校，材料科学与工程为工科骨干，百色铝产业有支撑。" },
+
+  { id:8, name:"湖南城市学院", prov:"湖南", city:"益阳", type:"public", regionTag:"三线",
+    tier:"stable",
+    s25:526, s24:498, s23:null, r25:36800,
+    sub:["物理+化学"], subReq:"54",
+    majors:["土木工程", "城乡规划", "工程造价", "电子信息工程"],
+    fee:5200, empRate:0.81,
+    dim:{ emp:7, salary:5, industry:5, region:4, cost:8 },
+    why:"城建特色院校，土木和城乡规划对口市政。24年498→25年526涨28分。",
+    intro:"湖南省属院校，城乡规划和土木工程为特色，对接城市化建设需求。" },
 
   { id:9, name:"海南医科大学", prov:"海南", city:"海口", type:"public", regionTag:"海南",
-    tier:"rush",
-    s25:525, s24:518, s23:512, r25:33800,
-    sub:["物理+化学","物理+化学+生物"], subReq:"654",
-    majors:["临床医学","预防医学","药学","医学影像技术"],
-    fee:6000, empRate:0.82,
-    dim:{ emp:7, salary:6, industry:7, region:5, cost:9 },
-    why:"省内唯一医科院校，但物化地不能报物化生专业组。只能选不限组，专业选择受限大。注意选科硬约束！",
-    intro:"海南省唯一公立医学院校(原海南医学院)，2025年升格医科大学，临床医学为省级重点。" },
-
-  { id:10, name:"中原工学院", prov:"河南", city:"郑州", type:"public", regionTag:"中部",
-    tier:"rush",
-    s25:525, s24:518, s23:511, r25:33800,
-    sub:["物理+化学"], subReq:"54",
-    majors:["纺织工程","机械工程","电子信息工程","建筑环境"],
-    fee:5500, empRate:0.83,
-    dim:{ emp:7, salary:6, industry:7, region:6, cost:8 },
-    why:"郑州省会城市，纺织+机械双引擎。电子信息对接郑州高新区，省会资源比地级市强一截。",
-    intro:"河南省属工科院校，纺织工程为传统优势，电子信息近年发展快。" },
-
-  { id:11, name:"荆楚理工学院", prov:"湖北", city:"荆门", type:"public", regionTag:"中部",
-    tier:"rush",
-    s25:524, s24:517, s23:510, r25:34000,
-    sub:["物理+化学"], subReq:"54",
-    majors:["机械工程","电气工程","计算机科学","化工与制药"],
-    fee:5200, empRate:0.80,
-    dim:{ emp:6, salary:5, industry:6, region:4, cost:9 },
-    why:"机械电气有基础，化工对接荆门石化产业。小城市但工科实在，学费适中。",
-    intro:"湖北省属应用型院校，机械工程和化工为骨干，对接荆门石化产业园。" },
-
-  { id:12, name:"五邑大学", prov:"广东", city:"江门", type:"public", regionTag:"珠三角",
-    tier:"rush",
-    s25:523, s24:516, s23:510, r25:34200,
-    sub:["物理+化学","物理+不限"], subReq:"54",
-    majors:["电子信息工程","计算机科学与技术","通信工程","机械工程"],
-    fee:5500, empRate:0.88,
-    dim:{ emp:8, salary:7, industry:8, region:8, cost:9 },
-    why:"珠三角工科就业强校，电子信息被华为/中兴供应链大量吸收。学费低，就业率和薪资双高。",
-    intro:"广东江门公办院校，工科实力强，电子信息专业对接珠三角制造业升级需求。" },
-
-  { id:13, name:"郑州工程技术学院", prov:"河南", city:"郑州", type:"public", regionTag:"中部",
-    tier:"rush",
-    s25:523, s24:516, s23:509, r25:34200,
-    sub:["物理+化学"], subReq:"54",
-    majors:["机械工程","电气工程","食品工程","土木工程"],
-    fee:5000, empRate:0.80,
-    dim:{ emp:6, salary:5, industry:6, region:5, cost:10 },
-    why:"郑州区位加分，电气工程可考国网。新升本不久底蕴不足，但省会资源弥补。",
-    intro:"河南省属应用型本科，2016年升本，机械电气为骨干专业。" },
-
-  { id:14, name:"长春工程学院", prov:"吉林", city:"长春", type:"public", regionTag:"东北",
-    tier:"rush",
-    s25:522, s24:515, s23:508, r25:34500,
-    sub:["物理+化学"], subReq:"54",
-    majors:["电气工程","土木工程","水利水电","测绘工程"],
-    fee:5000, empRate:0.82,
-    dim:{ emp:7, salary:5, industry:6, region:4, cost:10 },
-    why:"水利水电和电气工程是硬核方向，电气可考国网东北岗。长春省会但东北经济弱留不住人。",
-    intro:"吉林省属工科院校，水利水电为特色，电气工程可走国网通道。" },
-
-  { id:15, name:"河北建筑工程学院", prov:"河北", city:"张家口", type:"public", regionTag:"环渤海",
-    tier:"rush",
-    s25:520, s24:513, s23:506, r25:35500,
-    sub:["物理+化学"], subReq:"54",
-    majors:["土木工程","建筑学","电气工程","给排水科学"],
-    fee:5200, empRate:0.80,
-    dim:{ emp:7, salary:5, industry:5, region:4, cost:9 },
-    why:"建筑土木老牌，电气工程考国网路径。张家口冬奥后基建有需求，但行业整体下行。",
-    intro:"河北省属建筑类院校，土木和建筑学为传统优势，冬奥后张家口基建升温。" },
-
-  { id:16, name:"湖南人文科技学院", prov:"湖南", city:"娄底", type:"public", regionTag:"中部",
-    tier:"rush",
-    s25:519, s24:512, s23:505, r25:35800,
-    sub:["物理+化学"], subReq:"54",
-    majors:["材料科学","电子信息工程","计算机科学","能源与动力"],
-    fee:4800, empRate:0.78,
-    dim:{ emp:6, salary:5, industry:6, region:4, cost:10 },
-    why:"电子信息方向有基础，能源与动力对口电力行业。娄底偏远但学费极低。",
-    intro:"湖南省属综合院校，材料和电子信息为工科骨干，娄底地方产业支撑有限。" },
-
-  { id:17, name:"北部湾大学", prov:"广西", city:"钦州", type:"public", regionTag:"新一线",
-    tier:"rush",
-    s25:519, s24:512, s23:505, r25:40200,
-    sub:["物理+不限","物理+地理"], subReq:"54",
-    majors:["水产养殖学","船舶与海洋工程","物流管理","海洋科学"],
-    fee:5000, empRate:0.78,
-    dim:{ emp:6, salary:5, industry:6, region:4, cost:10 },
-    why:"海洋方向与海南自贸港协同效应，竞争小。54组分数上来了但就业面确实窄。",
-    intro:"以海洋水产为特色，与海南一水之隔，海洋类专业对口北部湾经济区需求。" },
-
-  { id:18, name:"河南城建学院", prov:"河南", city:"平顶山", type:"public", regionTag:"中部",
-    tier:"rush",
-    s25:518, s24:511, s23:504, r25:36200,
-    sub:["物理+化学"], subReq:"54",
-    majors:["土木工程","建筑学","城乡规划","给排水科学"],
-    fee:5000, empRate:0.79,
-    dim:{ emp:6, salary:5, industry:5, region:4, cost:10 },
-    why:"城建特色明确，给排水和城乡规划对口市政工程。平顶山资源型城市转型中。",
-    intro:"河南省属城建特色院校，城乡规划和给排水为骨干专业。" },
-
-  // ---- 稳 (497~517) ----
-  { id:19, name:"安阳工学院", prov:"河南", city:"安阳", type:"public", regionTag:"中部",
     tier:"stable",
-    s25:517, s24:510, s23:503, r25:36800,
-    sub:["物理+化学"], subReq:"54",
-    majors:["机械工程","土木工程","化学工程","飞行器设计"],
-    fee:5000, empRate:0.79,
-    dim:{ emp:6, salary:5, industry:6, region:4, cost:10 },
-    why:"飞行器设计是亮点，机械工程基础扎实。安阳制造业有底子，517分压线录。",
-    intro:"河南省属工科院校，机械工程和飞行器设计为特色，安阳航空运动之都。" },
+    s25:525, s24:null, s23:null, r25:37000,
+    sub:["物理+化学+生物"], subReq:"654",
+    majors:["临床医学", "预防医学", "药学", "护理学"],
+    fee:6000, empRate:0.9,
+    dim:{ emp:9, salary:7, industry:9, region:9, cost:7 },
+    why:"省内医学院，654组物化生可报。临床医学就业极稳。2025年654组新增。",
+    intro:"海南省属医学院校，临床医学和预防医学为骨干，省内医疗系统主要人才来源。" },
 
-  { id:20, name:"内蒙古工业大学", prov:"内蒙古", city:"呼和浩特", type:"public", regionTag:"环渤海",
+  { id:10, name:"中原工学院", prov:"河南", city:"郑州", type:"public", regionTag:"新一线",
     tier:"stable",
-    s25:516, s24:509, s23:502, r25:37000,
+    s25:525, s24:483, s23:553, r25:37000,
     sub:["物理+化学"], subReq:"54",
-    majors:["机械工程","电气工程","化学工程","材料科学"],
-    fee:5200, empRate:0.80,
-    dim:{ emp:7, salary:5, industry:6, region:3, cost:9 },
-    why:"电气工程可考国网边疆岗竞争小，机械化工有产业基础。呼和浩特省会但偏远。",
-    intro:"内蒙古自治区属工科院校，机械和电气为骨干，化工对接煤化工产业。" },
-
-  { id:21, name:"黑龙江工程学院", prov:"黑龙江", city:"哈尔滨", type:"public", regionTag:"东北",
-    tier:"stable",
-    s25:515, s24:508, s23:501, r25:37500,
-    sub:["物理+化学"], subReq:"54",
-    majors:["土木工程","测绘工程","电气工程","交通运输"],
-    fee:4500, empRate:0.78,
-    dim:{ emp:6, salary:5, industry:5, region:3, cost:10 },
-    why:"测绘和土木有基础，电气可走国网。学费极低但东北经济下行是硬伤。",
-    intro:"黑龙江省属工科院校，测绘工程为传统优势，电气工程对接国网。" },
-
-  { id:22, name:"桂林理工大学", prov:"广西", city:"桂林", type:"public", regionTag:"新一线",
-    tier:"stable",
-    s25:515, s24:508, s23:501, r25:40000,
-    sub:["物理+化学","物理+不限","物理+地理"], subReq:"54",
-    majors:["地质工程","土木工程","计算机科学与技术","环境工程"],
+    majors:["纺织工程", "机械工程", "电气工程", "计算机科学"],
     fee:5500, empRate:0.84,
-    dim:{ emp:7, salary:6, industry:6, region:5, cost:9 },
-    why:"地质/土木就业稳但行业下行，计算机方向还行。物化地与地质专业匹配，但就业面窄。",
-    intro:"地质和环境为特色的理工类院校，土木和地质就业有基础但需考虑行业周期。" },
+    dim:{ emp:7, salary:6, industry:7, region:6, cost:8 },
+    why:"郑州公办，纺织机械传统强校。24年483→25年525暴涨42分，但郑州区位加成。",
+    intro:"河南省属工科院校，纺织工程全国知名，机械和电气为骨干。" },
 
-  { id:23, name:"新疆工程学院", prov:"新疆", city:"乌鲁木齐", type:"public", regionTag:"西北",
+  { id:11, name:"荆楚理工学院", prov:"湖北", city:"荆门", type:"public", regionTag:"四线",
     tier:"stable",
-    s25:513, s24:506, s23:499, r25:45200,
-    sub:["物理+化学","物理+不限"], subReq:"54",
-    majors:["采矿工程","电气工程及其自动化","安全工程","机械工程"],
-    fee:3500, empRate:0.82,
-    dim:{ emp:6, salary:6, industry:6, region:2, cost:10 },
-    why:"学费全国最低，电气工程可考国网边疆岗竞争小。矿业对口就业但极偏远。",
-    intro:"新疆公办工科院校，学费极低，电气可走国网边疆通道。" },
-
-  { id:24, name:"闽南师范大学", prov:"福建", city:"漳州", type:"public", regionTag:"新一线",
-    tier:"stable",
-    s25:513, s24:506, s23:499, r25:36200,
-    sub:["物理+不限","物理+化学","物理+地理"], subReq:"000",
-    majors:["地理科学","数学与应用数学","化学","计算机科学与技术"],
-    fee:5200, empRate:0.83,
-    dim:{ emp:7, salary:5, industry:5, region:6, cost:9 },
-    why:"不限组可以报，地理科学与物化地匹配。师范方向稳定但薪资一般，非师范计算机也有。",
-    intro:"福建省属师范院校，地理科学为优势学科，适合地理教育或规划方向。" },
-
-  { id:25, name:"肇庆学院", prov:"广东", city:"肇庆", type:"public", regionTag:"珠三角",
-    tier:"stable",
-    s25:510, s24:503, s23:496, r25:37200,
-    sub:["物理+化学","物理+不限"], subReq:"54",
-    majors:["计算机科学与技术","电子信息工程","机械设计制造及其自动化"],
-    fee:5200, empRate:0.84,
-    dim:{ emp:7, salary:7, industry:7, region:7, cost:9 },
-    why:"珠三角腹地，广州1小时通勤圈，计算机和电子信息面向大湾区就业，性价比高。",
-    intro:"广东肇庆公办院校，工科近年进步快，毕业生在珠三角IT和制造业认可度提升。" },
-
-  { id:26, name:"喀什大学", prov:"新疆", city:"喀什", type:"public", regionTag:"西北",
-    tier:"stable",
-    s25:510, s24:503, s23:496, r25:43000,
+    s25:524, s24:487, s23:null, r25:37200,
     sub:["物理+化学"], subReq:"54",
-    majors:["计算机科学","电子信息","化学","生物科学"],
-    fee:3500, empRate:0.76,
-    dim:{ emp:5, salary:4, industry:4, region:1, cost:10 },
-    why:"学费极低，但喀什极端偏远。计算机方向有但就业资源极度匮乏，仅做兜底。",
-    intro:"新疆喀什公办院校，学费最低，但地理极端偏远，就业资源有限。" },
+    majors:["机械工程", "电气工程", "化学工程", "食品科学"],
+    fee:5200, empRate:0.8,
+    dim:{ emp:6, salary:5, industry:5, region:3, cost:9 },
+    why:"湖北公办理工，机械电气有基础。24年487→25年524涨37分，荆门偏远但学费低。",
+    intro:"湖北省属理工院校，机械工程和化学工程为骨干，荆门石化产业有支撑。" },
 
-  { id:27, name:"赣南医科大学", prov:"江西", city:"赣州", type:"public", regionTag:"新一线",
+  { id:12, name:"郑州工程技术学院", prov:"河南", city:"郑州", type:"public", regionTag:"新一线",
     tier:"stable",
-    s25:507, s24:500, s23:493, r25:37800,
-    sub:["物理+化学","物理+化学+生物"], subReq:"654",
-    majors:["临床医学","麻醉学","医学影像学","预防医学"],
-    fee:5500, empRate:0.80,
-    dim:{ emp:7, salary:6, industry:7, region:4, cost:9 },
-    why:"麻醉学硬核但物化地不能报物化生专业组。只能选不限组，专业选择受限。",
-    intro:"江西省属医学院，麻醉学为特色专业，物化地选科限制大注意选科硬约束。" },
+    s25:523, s24:515, s23:null, r25:37500,
+    sub:["物理+化学"], subReq:"54",
+    majors:["机械工程", "食品科学", "电子信息工程", "物流管理"],
+    fee:5000, empRate:0.82,
+    dim:{ emp:7, salary:5, industry:6, region:6, cost:9 },
+    why:"郑州公办，54组523分在稳区间。24年515→25年523涨幅小，相对稳定。",
+    intro:"河南省属工科院校，食品科学与机械工程有基础，郑州区位优势。" },
 
-  { id:28, name:"成都工业学院", prov:"四川", city:"成都", type:"public", regionTag:"新一线",
+  { id:13, name:"长春工程学院", prov:"吉林", city:"长春", type:"public", regionTag:"东北",
     tier:"stable",
-    s25:505, s24:498, s23:491, r25:38500,
-    sub:["物理+化学","物理+不限"], subReq:"54",
-    majors:["机械工程","电气工程及其自动化","计算机科学与技术","软件工程"],
-    fee:5200, empRate:0.87,
-    dim:{ emp:8, salary:7, industry:8, region:7, cost:9 },
-    why:"成都制造业+IT双引擎，电气工程可考国网，计算机对接成都高新区。就业指数稳区间最高。",
-    intro:"成都本地工科院校，产教融合做得好，电气和机械与成都制造业企业无缝对接。" },
+    s25:522, s24:509, s23:537, r25:37800,
+    sub:["物理+化学"], subReq:"54",
+    majors:["电气工程", "土木工程", "水利水电工程", "机械工程"],
+    fee:5000, empRate:0.82,
+    dim:{ emp:7, salary:5, industry:6, region:4, cost:9 },
+    why:"东北公办工科，电气可走国网。23年537→24年509→25年522，波动大但方向向上。",
+    intro:"吉林省属工科院校，电气工程和水利为特色，对接国网和水利系统。" },
 
-  { id:29, name:"琼台师范学院", prov:"海南", city:"海口", type:"public", regionTag:"海南",
+  { id:14, name:"河北建筑工程学院", prov:"河北", city:"张家口", type:"public", regionTag:"三线",
     tier:"stable",
-    s25:505, s24:498, s23:491, r25:38500,
-    sub:["不限","物理+不限"], subReq:"000",
-    majors:["小学教育","学前教育","数学与应用数学","计算机科学与技术"],
-    fee:4600, empRate:0.90,
+    s25:520, s24:490, s23:null, r25:38300,
+    sub:["物理+化学"], subReq:"54",
+    majors:["土木工程", "建筑学", "电气工程", "给排水科学与工程"],
+    fee:5000, empRate:0.81,
+    dim:{ emp:7, salary:5, industry:5, region:3, cost:9 },
+    why:"建筑类强校，土木和建筑学对口就业。24年490→25年520涨30分，冬奥红利。",
+    intro:"河北省属建筑类院校，土木工程和建筑学为传统优势，张家口冬奥城市。" },
+
+  { id:15, name:"湖南人文科技学院", prov:"湖南", city:"娄底", type:"public", regionTag:"三线",
+    tier:"stable",
+    s25:519, s24:534, s23:561, r25:38500,
+    sub:["物理+化学"], subReq:"54",
+    majors:["材料科学与工程", "电子信息工程", "能源与动力工程", "农学"],
+    fee:4800, empRate:0.8,
+    dim:{ emp:6, salary:5, industry:5, region:3, cost:10 },
+    why:"湖南公办，学费低。24年534→25年519降15分，三年连降（561→534→519），窗口期。",
+    intro:"湖南省属综合院校，材料与电子为工科骨干，娄底钢铁产业有支撑。" },
+
+  { id:16, name:"北部湾大学", prov:"广西", city:"钦州", type:"public", regionTag:"四线",
+    tier:"stable",
+    s25:519, s24:483, s23:null, r25:38500,
+    sub:["物理+化学"], subReq:"54",
+    majors:["海洋科学", "船舶与海洋工程", "水产养殖学", "食品工程"],
+    fee:5000, empRate:0.78,
+    dim:{ emp:6, salary:4, industry:5, region:3, cost:9 },
+    why:"广西公办，海洋方向有特色但钦州偏远。24年483→25年519涨36分。",
+    intro:"广西省属海洋特色院校，船舶与海洋工程为骨干，对接北部湾经济区。" },
+
+  { id:17, name:"安阳工学院", prov:"河南", city:"安阳", type:"public", regionTag:"三线",
+    tier:"stable",
+    s25:517, s24:507, s23:537, r25:38800,
+    sub:["物理+化学"], subReq:"54",
+    majors:["机械工程", "土木工程", "化学工程", "飞行器设计"],
+    fee:5000, empRate:0.79,
+    dim:{ emp:6, salary:5, industry:6, region:4, cost:9 },
+    why:"河南公办，机械和土木有基础。524分踩线，24年507→25年517涨10分。",
+    intro:"河南省属工科院校，机械工程和飞行器设计有特色，安阳制造业有支撑。" },
+
+  { id:18, name:"内蒙古工业大学", prov:"内蒙古", city:"呼和浩特", type:"public", regionTag:"三线",
+    tier:"stable",
+    s25:516, s24:483, s23:544, r25:39000,
+    sub:["物理+化学"], subReq:"54",
+    majors:["机械工程", "电气工程", "材料科学与工程", "化学工程"],
+    fee:5000, empRate:0.82,
+    dim:{ emp:7, salary:5, industry:5, region:3, cost:9 },
+    why:"内蒙古工科强校，机械电气有底子。23年544→25年516大幅下降，窗口期。",
+    intro:"内蒙古自治区属工科院校，机械工程和电气工程传统强项，呼和浩特区位。" },
+
+  { id:19, name:"黑龙江工程学院", prov:"黑龙江", city:"哈尔滨", type:"public", regionTag:"东北",
+    tier:"stable",
+    s25:515, s24:492, s23:542, r25:39200,
+    sub:["物理+化学"], subReq:"54",
+    majors:["土木工程", "测绘工程", "电气工程", "机械工程"],
+    fee:4500, empRate:0.8,
+    dim:{ emp:6, salary:4, industry:5, region:3, cost:10 },
+    why:"哈尔滨公办，学费最低之一。23年542→25年515三年连降，窗口期但东北偏冷。",
+    intro:"黑龙江省属工科院校，测绘工程为特色，土木和机械有基础。" },
+
+  { id:20, name:"桂林理工大学", prov:"广西", city:"桂林", type:"public", regionTag:"三线",
+    tier:"stable",
+    s25:515, s24:531, s23:572, r25:39200,
+    sub:["物理+化学"], subReq:"54",
+    majors:["材料科学与工程", "冶金工程", "土木工程", "环境工程"],
+    fee:5200, empRate:0.83,
+    dim:{ emp:7, salary:5, industry:5, region:5, cost:8 },
+    why:"桂林公办，材料冶金有实力。23年572→24年531→25年515，三年狂降57分！大窗口。",
+    intro:"广西省属重点高校，材料科学与工程为优势，冶金工程对接广西有色金属产业。" },
+
+  { id:21, name:"新疆工程学院", prov:"新疆", city:"乌鲁木齐", type:"public", regionTag:"西北",
+    tier:"stable",
+    s25:513, s24:497, s23:null, r25:39500,
+    sub:["物理+化学"], subReq:"54",
+    majors:["采矿工程", "电气工程", "机械工程", "安全工程"],
+    fee:3500, empRate:0.82,
+    dim:{ emp:7, salary:5, industry:5, region:2, cost:10 },
+    why:"新疆公办，学费极低，电气可走国网新疆岗。偏远但就业有保障。",
+    intro:"新疆自治区属工科院校，采矿工程和安全工程为特色，对接新疆能源产业。" },
+
+  { id:22, name:"闽南师范大学", prov:"福建", city:"漳州", type:"public", regionTag:"二线",
+    tier:"stable",
+    s25:513, s24:588, s23:574, r25:39500,
+    sub:["不限"], subReq:"000",
+    majors:["小学教育", "学前教育", "数学与应用数学", "计算机科学与技术"],
+    fee:4600, empRate:0.9,
     dim:{ emp:8, salary:5, industry:6, region:6, cost:10 },
-    why:"海南基础教育刚需，小学教育几乎百分百就业。不限组可报但薪资天花板低。学费最低。",
-    intro:"海南省内老牌师范，小学教育/学前教育为王牌，海南基础教育师资主要来源。" },
+    why:"福建公办师范，就业最稳。000组24年588→25年513暴跌75分！极罕见窗口。",
+    intro:"福建省属师范院校，小学教育为王牌，闽南地区师资主要来源。" },
 
-  { id:30, name:"广西科技大学", prov:"广西", city:"柳州", type:"public", regionTag:"新一线",
+  { id:23, name:"肇庆学院", prov:"广东", city:"肇庆", type:"public", regionTag:"珠三角",
     tier:"stable",
-    s25:505, s24:498, s23:491, r25:38500,
-    sub:["物理+化学","物理+不限"], subReq:"54",
-    majors:["机械工程","车辆工程","电气工程及其自动化","土木工程"],
-    fee:5500, empRate:0.85,
-    dim:{ emp:7, salary:6, industry:7, region:5, cost:9 },
-    why:"柳州工业城，汽车产业链完整，车辆工程和机械直接对口。偏远但工科真就业。",
-    intro:"广西唯一以工科为主的省属院校，车辆工程为王牌，与柳工/上汽通用五菱深度合作。" },
+    s25:510, s24:484, s23:null, r25:40000,
+    sub:["物理+化学"], subReq:"54",
+    majors:["机械工程", "电子信息工程", "计算机科学", "食品科学"],
+    fee:5200, empRate:0.84,
+    dim:{ emp:7, salary:6, industry:7, region:7, cost:8 },
+    why:"广东公办，肇庆虽偏但属珠三角。24年484→25年510涨26分，珠三角就业加成。",
+    intro:"广东省属综合院校，机械和电子信息为工科骨干，对接珠三角制造业。" },
 
-  // ---- 保 (<497) ----
-  { id:31, name:"三亚学院", prov:"海南", city:"三亚", type:"private", regionTag:"海南",
+  { id:24, name:"喀什大学", prov:"新疆", city:"喀什", type:"public", regionTag:"西北",
+    tier:"stable",
+    s25:510, s24:null, s23:null, r25:40000,
+    sub:["物理+化学"], subReq:"54",
+    majors:["电气工程", "计算机科学", "化学", "数学与应用数学"],
+    fee:3500, empRate:0.75,
+    dim:{ emp:5, salary:3, industry:4, region:1, cost:10 },
+    why:"新疆公办，学费极低。但喀什偏远到极致。2025年54组新增。",
+    intro:"新疆自治区属综合院校，喀什地区唯一本科院校，电气工程有基础。" },
+
+  { id:25, name:"赣南医科大学", prov:"江西", city:"赣州", type:"public", regionTag:"三线",
     tier:"safe",
-    s25:480, s24:472, s23:465, r25:43200,
-    sub:["不限","物理+不限"], subReq:"000",
-    majors:["计算机科学与技术","法学","会计学","软件工程"],
+    s25:507, s24:null, s23:null, r25:41000,
+    sub:["物理+化学+生物"], subReq:"654",
+    majors:["临床医学", "麻醉学", "医学影像学", "预防医学"],
+    fee:5200, empRate:0.88,
+    dim:{ emp:9, salary:6, industry:8, region:3, cost:9 },
+    why:"江西公办医学院，654组物化生可报。临床和麻醉就业硬。2025年654组新增。",
+    intro:"江西省属医学院校，临床医学和麻醉学为骨干，赣州地区医疗人才主要来源。" },
+
+  { id:26, name:"成都工业学院", prov:"四川", city:"成都", type:"public", regionTag:"新一线",
+    tier:"safe",
+    s25:505, s24:545, s23:null, r25:41500,
+    sub:["物理+化学"], subReq:"54",
+    majors:["机械工程", "电气工程", "计算机科学", "物流管理"],
+    fee:5200, empRate:0.85,
+    dim:{ emp:7, salary:6, industry:7, region:8, cost:8 },
+    why:"成都公办！成都区位加成巨大。24年545→25年505暴跌40分，极罕见的成都窗口。",
+    intro:"四川省属工科院校，机械和电气为骨干，成都电子信息产业生态支撑就业。" },
+
+  { id:27, name:"琼台师范学院", prov:"海南", city:"海口", type:"public", regionTag:"海南",
+    tier:"safe",
+    s25:505, s24:564, s23:548, r25:41500,
+    sub:["不限"], subReq:"000",
+    majors:["小学教育", "学前教育", "科学教育", "汉语国际教育"],
+    fee:4600, empRate:0.9,
+    dim:{ emp:8, salary:4, industry:6, region:9, cost:10 },
+    why:"省内师范，离家近。24年564→25年505暴跌59分，000组今年大窗口。",
+    intro:"海南省属师范院校，小学教育/学前教育为王牌，海南基础教育师资主要来源。" },
+
+  { id:28, name:"广西科技大学", prov:"广西", city:"柳州", type:"public", regionTag:"三线",
+    tier:"safe",
+    s25:505, s24:515, s23:null, r25:41500,
+    sub:["物理+化学"], subReq:"54",
+    majors:["机械工程", "车辆工程", "土木工程", "食品科学"],
+    fee:5200, empRate:0.82,
+    dim:{ emp:7, salary:5, industry:6, region:4, cost:9 },
+    why:"柳州公办，机械车辆对接柳汽柳工。24年515→25年505降10分，稳区间保底。",
+    intro:"广西省属工科院校，机械工程和车辆工程为特色，柳州汽车产业支撑强。" },
+
+  { id:29, name:"三亚学院", prov:"海南", city:"三亚", type:"private", regionTag:"海南",
+    tier:"safe",
+    s25:480, s24:483, s23:483, r25:46000,
+    sub:["不限"], subReq:"000",
+    majors:["法学", "会计学", "旅游管理", "计算机科学"],
     fee:28000, empRate:0.75,
-    dim:{ emp:5, salary:5, industry:6, region:6, cost:2 },
-    why:"4年学费11万+，家境一般不建议。计算机在海南本地有就业基础但性价比极低。",
-    intro:"海南省内最大民办本科，专业面广，但学费高是最大障碍。" },
+    dim:{ emp:5, salary:4, industry:6, region:7, cost:2 },
+    why:"省内民办，4年学费11万+。家境模式默认过滤。仅作兜底选项。",
+    intro:"海南省民办综合院校，学费高但省内唯一兜底选择。" },
 
-  { id:32, name:"武昌首义学院", prov:"湖北", city:"武汉", type:"private", regionTag:"中部",
+  { id:30, name:"武昌首义学院", prov:"湖北", city:"武汉", type:"private", regionTag:"新一线",
     tier:"safe",
-    s25:485, s24:478, s23:471, r25:42500,
-    sub:["物理+不限","物理+化学"], subReq:"54",
-    majors:["机械设计制造及其自动化","计算机科学与技术","电气工程及其自动化"],
-    fee:22000, empRate:0.80,
+    s25:485, s24:495, s23:null, r25:45000,
+    sub:["物理+化学"], subReq:"54",
+    majors:["机械设计制造及其自动化", "计算机科学与技术", "电气工程及其自动化"],
+    fee:22000, empRate:0.8,
     dim:{ emp:6, salary:6, industry:7, region:7, cost:3 },
-    why:"民办中工科最强之一，华科背景。但就业天花板明显，4年9万+学费。",
+    why:"武汉民办工科，华科背景。4年9万+学费，家境模式默认过滤。",
     intro:"武汉民办工科院校，依托华科背景，民办中工科质量算好的但学费高。" },
 
-  { id:33, name:"重庆文理学院", prov:"重庆", city:"永川", type:"public", regionTag:"新一线",
+  { id:31, name:"重庆文理学院", prov:"重庆", city:"永川", type:"public", regionTag:"新一线",
     tier:"rush",
-    s25:533, s24:526, s23:519, r25:34800,
-    sub:["仅物理","物理+化学"], subReq:"4",
-    majors:["计算机科学与技术","电子信息工程","机械工程","材料科学"],
+    s25:533, s24:587, s23:571, r25:34800,
+    sub:["仅物理"], subReq:"4",
+    majors:["计算机科学与技术", "电子信息工程", "机械工程", "材料科学"],
     fee:5600, empRate:0.85,
     dim:{ emp:7, salary:6, industry:7, region:6, cost:8 },
-    why:"重庆直辖市区位，工科就业对接成渝双城经济圈。4组仅物理可报，517冲一把有机会。",
+    why:"重庆直辖市区位，4组仅物理可报。24年587→25年533暴跌54分！大窗口。",
     intro:"重庆市属公办院校，位于永川区，工科对接重庆制造业。" },
 
-  { id:34, name:"贵州理工学院", prov:"贵州", city:"贵阳", type:"public", regionTag:"新一线",
+  { id:32, name:"贵州理工学院", prov:"贵州", city:"贵阳", type:"public", regionTag:"新一线",
     tier:"rush",
-    s25:534, s24:527, s23:520, r25:34500,
+    s25:534, s24:501, s23:537, r25:34500,
     sub:["物理+化学"], subReq:"54",
-    majors:["机械工程","电气工程及其自动化","土木工程","采矿工程"],
+    majors:["机械工程", "电气工程及其自动化", "土木工程", "采矿工程"],
     fee:5000, empRate:0.83,
     dim:{ emp:7, salary:5, industry:6, region:4, cost:9 },
-    why:"贵州唯一纯工科公办本科，电气可走国网贵州岗。学费低，就业对口。",
+    why:"贵州唯一纯工科公办本科，电气可走国网。23年537→24年501→25年534，波动大。",
     intro:"贵州省属纯工科院校，电气工程对接贵州电力和矿业。" },
 
-  { id:35, name:"沈阳建筑大学", prov:"辽宁", city:"沈阳", type:"public", regionTag:"东北",
+  { id:33, name:"沈阳建筑大学", prov:"辽宁", city:"沈阳", type:"public", regionTag:"东北",
     tier:"rush",
-    s25:534, s24:527, s23:520, r25:34500,
+    s25:534, s24:483, s23:null, r25:34500,
     sub:["物理+化学"], subReq:"54",
-    majors:["土木工程","建筑学","电气工程","给排水科学与工程"],
+    majors:["土木工程", "建筑学", "电气工程", "给排水科学与工程"],
     fee:5200, empRate:0.84,
     dim:{ emp:7, salary:6, industry:6, region:5, cost:8 },
-    why:"建筑老牌强校，土木和建筑学在东北认可度高。517冲54组有机会。",
+    why:"建筑老牌强校，土木建筑学东北认可度高。24年483→25年534暴涨51分！",
     intro:"辽宁省属建筑类高校，土木工程为传统优势，建筑学科底蕴深厚。" },
 
-  { id:36, name:"湖北理工学院", prov:"湖北", city:"黄石", type:"public", regionTag:"中部",
+  { id:34, name:"湖北理工学院", prov:"湖北", city:"黄石", type:"public", regionTag:"中部",
     tier:"stable",
-    s25:528, s24:521, s23:514, r25:36200,
+    s25:528, s24:492, s23:null, r25:36200,
     sub:["物理+化学"], subReq:"54",
-    majors:["机械工程","电气工程","计算机科学","环境工程"],
+    majors:["机械工程", "电气工程", "计算机科学", "环境工程"],
     fee:5200, empRate:0.84,
     dim:{ emp:7, salary:6, industry:7, region:5, cost:9 },
-    why:"湖北工科新秀，机械和电气对接武汉城市圈制造业。分数528在稳区间。",
+    why:"湖北工科新秀，机械电气对接武汉城市圈。24年492→25年528涨36分。",
     intro:"湖北省属理工院校，位于黄石，工科产教融合做得扎实。" },
 
-  { id:37, name:"长江师范学院", prov:"重庆", city:"涪陵", type:"public", regionTag:"新一线",
+  { id:35, name:"长江师范学院", prov:"重庆", city:"涪陵", type:"public", regionTag:"新一线",
     tier:"stable",
-    s25:528, s24:521, s23:514, r25:36200,
+    s25:528, s24:525, s23:null, r25:36200,
     sub:["物理+化学"], subReq:"54",
-    majors:["电子信息工程","计算机科学","化学","食品科学"],
+    majors:["电子信息工程", "计算机科学", "化学", "食品科学"],
     fee:5000, empRate:0.82,
     dim:{ emp:7, salary:5, industry:6, region:5, cost:9 },
-    why:"涪陵工业城市，化工和电子信息有产业基础。528稳区间，学费低。",
+    why:"涪陵工业城市，化工和电子信息有产业基础。24年525→25年528仅涨3分，非常稳定。",
     intro:"重庆市属院校，位于涪陵，化工和电子信息对接本地产业。" },
 
-  { id:38, name:"韶关学院", prov:"广东", city:"韶关", type:"public", regionTag:"珠三角",
+  { id:36, name:"韶关学院", prov:"广东", city:"韶关", type:"public", regionTag:"珠三角",
     tier:"stable",
-    s25:526, s24:519, s23:512, r25:36800,
+    s25:526, s24:535, s23:null, r25:36800,
     sub:["物理+化学"], subReq:"54",
-    majors:["机械工程","计算机科学","化学工程","食品科学"],
+    majors:["机械工程", "计算机科学", "化学工程", "食品科学"],
     fee:5200, empRate:0.83,
     dim:{ emp:7, salary:6, industry:7, region:7, cost:8 },
-    why:"广东公办，韶关虽偏但属珠三角辐射区，工科就业面向大湾区。",
+    why:"广东公办，韶关虽偏但属珠三角辐射区。24年535→25年526降9分，略松。",
     intro:"广东省属院校，位于韶关，食品和化工为特色。" },
 
-  { id:39, name:"攀枝花学院", prov:"四川", city:"攀枝花", type:"public", regionTag:"新一线",
+  { id:37, name:"攀枝花学院", prov:"四川", city:"攀枝花", type:"public", regionTag:"新一线",
     tier:"stable",
-    s25:519, s24:512, s23:505, r25:39500,
+    s25:519, s24:507, s23:null, r25:39500,
     sub:["物理+化学"], subReq:"54",
-    majors:["材料科学与工程","机械工程","电气工程","土木工程"],
-    fee:5200, empRate:0.80,
+    majors:["材料科学与工程", "机械工程", "电气工程", "土木工程"],
+    fee:5200, empRate:0.8,
     dim:{ emp:6, salary:5, industry:6, region:3, cost:9 },
-    why:"攀钢所在地，材料/冶金方向对口就业，但城市偏远。稳区间性价比还行。",
+    why:"攀钢所在地，材料/冶金方向对口就业，但城市偏远。24年507→25年519涨12分。",
     intro:"四川省属院校，位于攀枝花，依托攀钢产业优势。" },
 
-  { id:40, name:"海南热带海洋学院", prov:"海南", city:"三亚", type:"public", regionTag:"海南",
+  { id:38, name:"海南热带海洋学院", prov:"海南", city:"三亚", type:"public", regionTag:"海南",
     tier:"stable",
-    s25:527, s24:520, s23:513, r25:36500,
+    s25:527, s24:494, s23:540, r25:36500,
     sub:["物理+化学"], subReq:"54",
-    majors:["海洋科学","船舶与海洋工程","水产养殖学","食品工程"],
+    majors:["海洋科学", "船舶与海洋工程", "水产养殖学", "食品工程"],
     fee:5000, empRate:0.78,
     dim:{ emp:6, salary:5, industry:6, region:7, cost:9 },
-    why:"省内公办，08组物化527分，海洋方向与海南自贸港协同。离家近。",
+    why:"省内公办，54组527分，海洋方向与海南自贸港协同。23年540→24年494→25年527波动大。",
     intro:"海南省属公办，三亚校区，海洋和水产为特色，省内认可。" },
 
-  { id:41, name:"湖北民族大学", prov:"湖北", city:"恩施", type:"public", regionTag:"中部",
-    s25:494, s24:487, s23:480, r25:44000,
+  { id:39, name:"湖北民族大学", prov:"湖北", city:"恩施", type:"public", regionTag:"中部",
+    tier:"safe",
+    s25:494, s24:583, s23:null, r25:44000,
     sub:["物理+化学"], subReq:"54",
-    majors:["电气工程","计算机科学","食品科学","数学与应用数学"],
+    majors:["电气工程", "计算机科学", "食品科学", "数学与应用数学"],
     fee:5200, empRate:0.82,
     dim:{ emp:7, salary:5, industry:5, region:3, cost:9 },
-    why:"恩施偏远但电气/计算机工科方向还行，54组494分差517有23分余量，极稳的保底。",
+    why:"恩施偏远但电气/计算机工科还行。24年583→25年494暴跌89分！可能专业组变更。",
     intro:"湖北省属民族类高校，位于恩施，电气工程和食品科学为工科骨干。" },
 
-  { id:42, name:"洛阳师范学院", prov:"河南", city:"洛阳", type:"public", regionTag:"中部",
-    s25:483, s24:476, s23:469, r25:45000,
+  { id:40, name:"洛阳师范学院", prov:"河南", city:"洛阳", type:"public", regionTag:"中部",
+    tier:"safe",
+    s25:483, s24:535, s23:null, r25:45000,
     sub:["物理+化学"], subReq:"54",
-    majors:["计算机科学","电子信息工程","化学","物理学"],
+    majors:["计算机科学", "电子信息工程", "化学", "物理学"],
     fee:5000, empRate:0.78,
     dim:{ emp:6, salary:5, industry:5, region:5, cost:10 },
-    why:"洛阳历史文化名城但工科偏弱，54组483分比517低34分，铁保底。计算机方向在河南有就业基础。",
+    why:"洛阳公办，24年535→25年483暴跌52分，铁保底。计算机方向在河南有就业基础。",
     intro:"河南省属师范院校，计算机和化学为理科骨干，洛阳市产业发展有支撑。" },
 
-  { id:43, name:"陇东学院", prov:"甘肃", city:"庆阳", type:"public", regionTag:"西北",
-    s25:483, s24:476, s23:469, r25:45000,
+  { id:41, name:"陇东学院", prov:"甘肃", city:"庆阳", type:"public", regionTag:"西北",
+    tier:"safe",
+    s25:483, s24:530, s23:null, r25:45000,
     sub:["物理+化学"], subReq:"54",
-    majors:["土木工程","电气工程","石油工程","机械工程"],
+    majors:["土木工程", "电气工程", "石油工程", "机械工程"],
     fee:4500, empRate:0.76,
     dim:{ emp:5, salary:4, industry:5, region:2, cost:10 },
-    why:"石油工程对口长庆油田，土木电气也有基础。庆阳偏远但学费极低，铁保底。",
+    why:"石油工程对口长庆油田，24年530→25年483暴跌47分，铁保底。学费极低。",
     intro:"甘肃省属院校，石油工程对接长庆油田产业，庆阳能源基地支撑就业。" },
 
-  { id:44, name:"菏泽学院", prov:"山东", city:"菏泽", type:"public", regionTag:"环渤海",
-    s25:480, s24:473, s23:466, r25:46000,
+  { id:42, name:"菏泽学院", prov:"山东", city:"菏泽", type:"public", regionTag:"环渤海",
+    tier:"safe",
+    s25:480, s24:null, s23:null, r25:46000,
     sub:["物理+化学"], subReq:"54",
-    majors:["机械工程","电气工程","计算机科学","化学工程"],
+    majors:["机械工程", "电气工程", "计算机科学", "化学工程"],
     fee:5000, empRate:0.77,
     dim:{ emp:5, salary:4, industry:5, region:3, cost:10 },
-    why:"54组480分差517有37分余量，铁保底中的铁保底。机械电气有基础，菏泽在山东算偏远但学费低。",
+    why:"54组480分差524有44分余量，铁保底。2025年54组新增，无往年对比。",
     intro:"山东省属公办院校，机械和化学工程为骨架，菏泽地区产业支撑有限。" },
 
-  { id:45, name:"新乡学院", prov:"河南", city:"新乡", type:"public", regionTag:"中部",
-    s25:520, s24:503, s23:496, r25:31700,
+  { id:43, name:"新乡学院", prov:"河南", city:"新乡", type:"public", regionTag:"中部",
+    tier:"stable",
+    s25:520, s24:483, s23:546, r25:31700,
     sub:["物理+化学"], subReq:"54",
-    majors:["机械设计制造及其自动化","软件工程","电子信息科学与技术","物流管理"],
+    majors:["机械设计制造及其自动化", "软件工程", "电子信息科学与技术", "物流管理"],
     fee:5000, empRate:0.83,
     dim:{ emp:7, salary:5, industry:6, region:5, cost:9 },
-    why:"河南公办，54组520分差517仅3分，冲区间。机械和软件工程对口就业，新乡紧邻郑州有产业支撑，学费低。",
+    why:"河南公办，54组520分差524仅-4分，稳区间。机械和软件对口就业。23年546→25年520降26分。",
     intro:"河南省属公办院校，位于新乡，机械和软件工程为工科骨干，毗邻郑州城市圈。" },
 
-  { id:46, name:"潍坊学院", prov:"山东", city:"潍坊", type:"public", regionTag:"环渤海",
-    s25:526, s24:515, s23:508, r25:37000,
+  { id:44, name:"潍坊学院", prov:"山东", city:"潍坊", type:"public", regionTag:"环渤海",
+    tier:"stable",
+    s25:526, s24:520, s23:null, r25:37000,
     sub:["物理+化学"], subReq:"54",
-    majors:["智能制造工程","机械设计制造及其自动化","海洋渔业科学与技术","数学与应用数学"],
+    majors:["智能制造工程", "机械设计制造及其自动化", "海洋渔业科学与技术", "数学与应用数学"],
     fee:5500, empRate:0.84,
     dim:{ emp:7, salary:6, industry:7, region:6, cost:8 },
-    why:"山东公办，54组526分在稳区间。智能制造和机械是强项（有机械硕士点），潍坊制造业底子厚，就业对接山东工业走廊。",
+    why:"山东公办，54组526分稳区间。智能制造和机械有硕士点，潍坊制造业底子厚。24年520→25年526涨6分。",
     intro:"山东省属公办院校，位于潍坊，机械与智能制造学院有硕士点，对接山东制造业产业集群。" },
 ];
 
@@ -847,16 +830,50 @@ function subReqBadge(req) {
 }
 
 // 冲稳保判定(用2025实际分)
-// diff = 学校分 - 517：>0冲，-12~0稳，<-12保
+// diff = 学校分 - 524：>0冲，-12~0稳，<-12保
 function tierOf(score25) {
-  const diff = score25 - 517;
+  const diff = score25 - 524;
   if (diff > 0 && diff <= 20) return 'rush';
   if (diff >= -12 && diff <= 0) return 'stable';
   return 'safe';
 }
 S.forEach(s => { s.tier = tierOf(s.s25); });
 
-const MY_SCORE = 517;
+// 年度趋势渲染
+function yearTrendHTML(s) {
+  const parts = [];
+  // 2023
+  if (s.s23 != null) {
+    parts.push(`<span class="text-gray-400">23:<strong class="text-gray-500">${s.s23}</strong></span>`);
+    parts.push(`<span class="text-gray-300">→</span>`);
+  }
+  // 2024
+  if (s.s24 != null) {
+    const d24 = s.s25 - s.s24;
+    const c24 = d24 > 0 ? 'text-red-500' : d24 < 0 ? 'text-green-600' : 'text-gray-500';
+    const a24 = d24 > 0 ? '↑' : d24 < 0 ? '↓' : '→';
+    parts.push(`<span class="text-gray-400">24:<strong class="text-gray-600">${s.s24}</strong></span>`);
+    parts.push(`<span class="text-gray-300">→</span>`);
+  } else {
+    parts.push(`<span class="text-gray-300">24:-</span>`);
+    parts.push(`<span class="text-gray-300">→</span>`);
+  }
+  // 2025 (当前年)
+  let trendBadge = '';
+  if (s.s24 != null) {
+    const d = s.s25 - s.s24;
+    const c = d > 0 ? 'text-red-600' : d < 0 ? 'text-green-600' : 'text-gray-600';
+    const a = d > 0 ? '↑' : d < 0 ? '↓' : '→';
+    const absD = Math.abs(d);
+    trendBadge = `<span class="${c} font-bold text-[10px]">${a}${absD}</span>`;
+  } else {
+    trendBadge = `<span class="text-orange-500 text-[10px]">新</span>`;
+  }
+  parts.push(`<span>25:<strong class="text-blue-600">${s.s25}</strong>${trendBadge}</span>`);
+  return parts.join(' ');
+}
+
+const MY_SCORE = 524;
 
 // 状态
 let sortMode = 'idx'; // idx | score | cost
@@ -968,7 +985,7 @@ function renderList() {
         `).join('')}
       </div>
       <div class="flex items-center justify-between">
-        <span class="text-[10px] text-gray-500">2025: <strong class="text-blue-600">${s.s25}</strong> · 2024: ${s.s24}</span>
+        <span class="text-[10px] text-gray-500">${yearTrendHTML(s)}</span>
         <div class="flex gap-1" onclick="event.stopPropagation()">
           <button onclick="toggleCompare(${s.id})" class="px-1.5 py-0.5 text-[10px] rounded ${inCompare?'bg-green-100 text-green-700':'bg-gray-100 text-gray-500'}">${inCompare?'已加':'对比'}</button>
           <button onclick="addPlan(${s.id})" class="px-1.5 py-0.5 text-[10px] rounded ${inPlan?'bg-gray-100 text-gray-400':'bg-blue-100 text-blue-700'}" ${inPlan?'disabled':''}>${inPlan?'已加':'+志愿'}</button>
@@ -1133,15 +1150,31 @@ function showDetail(id) {
     </div>
 
     <div>
-      <h4 class="text-xs font-bold mb-1">录取数据</h4>
+      <h4 class="text-xs font-bold mb-1">录取数据（54组/对应科目组）</h4>
       <div class="bg-gray-50 rounded-lg p-2 text-xs">
         <table class="w-full">
-          <tr class="text-gray-500"><td>年份</td><td class="text-right">最低分</td><td class="text-right">位次</td></tr>
-          <tr><td>2025(实际)</td><td class="text-right font-semibold text-blue-600">${s.s25}</td><td class="text-right">${s.r25.toLocaleString()}</td></tr>
-          <tr><td>2024</td><td class="text-right">${s.s24}</td><td class="text-right text-gray-400">-</td></tr>
-          <tr><td>2023</td><td class="text-right">${s.s23}</td><td class="text-right text-gray-400">-</td></tr>
+          <tr class="text-gray-500"><td>年份</td><td class="text-right">投档线</td><td class="text-right">位次</td><td class="text-right">涨跌</td></tr>
+          ${s.s23 != null ? (() => {
+            const d23_24 = s.s24 != null ? s.s24 - s.s23 : null;
+            const arrow23 = d23_24 != null ? (d23_24 > 0 ? '↑' : d23_24 < 0 ? '↓' : '→') : '';
+            const color23 = d23_24 != null ? (d23_24 > 0 ? 'text-red-500' : d23_24 < 0 ? 'text-green-600' : 'text-gray-400') : '';
+            return `<tr><td>2023</td><td class="text-right">${s.s23}</td><td class="text-right text-gray-400">-</td><td class="text-right ${color23}">${arrow23}${d23_24 != null ? Math.abs(d23_24) : ''}</td></tr>`;
+          })() : ''}
+          ${s.s24 != null ? (() => {
+            const d24_25 = s.s25 - s.s24;
+            const arrow24 = d24_25 > 0 ? '↑' : d24_25 < 0 ? '↓' : '→';
+            const color24 = d24_25 > 0 ? 'text-red-500' : d24_25 < 0 ? 'text-green-600' : 'text-gray-400';
+            return `<tr><td>2024</td><td class="text-right font-semibold">${s.s24}</td><td class="text-right text-gray-400">-</td><td class="text-right ${color24}">${arrow24}${Math.abs(d24_25)}</td></tr>`;
+          })() : `<tr><td>2024</td><td class="text-right text-gray-400">-</td><td class="text-right text-gray-400">-</td><td class="text-right text-orange-500">2025新增</td></tr>`}
+          <tr class="bg-blue-50"><td class="font-semibold">2025</td><td class="text-right font-bold text-blue-600">${s.s25}</td><td class="text-right text-gray-500">${s.r25.toLocaleString()}</td><td class="text-right text-gray-400">实际</td></tr>
         </table>
-        <div class="mt-1 text-[10px] text-gray-400">3年趋势：${s.s23} → ${s.s24} → ${s.s25} (${s.s25>s.s23?'↑'+(s.s25-s.s23):s.s25<s.s23?'↓'+(s.s23-s.s25):'持平'})</div>
+        ${s.s24 != null ? (() => {
+          const d = s.s25 - s.s24;
+          const color = d > 0 ? 'text-red-600' : d < 0 ? 'text-green-600' : 'text-gray-600';
+          const label = d > 0 ? '分数上涨，竞争加剧' : d < 0 ? '分数下降，更容易进' : '持平';
+          return `<div class="mt-1.5 text-[10px] ${color} font-medium">24→25变动: ${d>0?'+':''}${d}分 (${label})</div>`;
+        })() : `<div class="mt-1.5 text-[10px] text-orange-500">2025年新增${s.subReq}专业组，无历史对比</div>`}
+        <div class="mt-0.5 text-[10px] text-gray-400">数据来源：海南省考试局官方投档线</div>
       </div>
     </div>
 
@@ -1273,7 +1306,9 @@ function renderRadar(schools) {
 function renderCompareTable(schools) {
   const rows = [
     { label:'就业指数', key: s => `<strong class="text-yellow-600">${s.idx}</strong>` },
-    { label:'2025投档分', key: s => s.s25 },
+    { label:'2025投档分', key: s => `<strong class="text-blue-600">${s.s25}</strong>` },
+    { label:'24→25变动', key: s => s.s24 != null ? (() => { const d=s.s25-s.s24; const c=d>0?'text-red-500':d<0?'text-green-600':'text-gray-400'; return `<span class="${c}">${d>0?'+':''}${d}</span>`; })() : '<span class="text-orange-500">新增</span>' },
+    { label:'2024投档分', key: s => s.s24 ?? '-' },
     { label:'学费/年', key: s => `<span class="${s.fee>10000?'text-red-500':'text-green-600'}">${s.fee>=10000?(s.fee/10000)+'万':s.fee+'元'}</span>` },
     { label:'就业率', key: s => (s.empRate*100).toFixed(0)+'%' },
     { label:'就业率维度', key: s => s.dim.emp },
@@ -1416,7 +1451,7 @@ function renderPlan() {
 function exportPlan() {
   const filled = planSlots.filter(p => p !== null);
   if (!filled.length) { toast('方案为空'); return; }
-  let txt = `高考志愿方案 | 海南517分 物化地 男生\n`;
+  let txt = `高考志愿方案 | 海南524分 物化地 男生\n`;
   txt += `导出时间: ${new Date().toLocaleString()}\n`;
   txt += `${'='.repeat(40)}\n\n`;
   planSlots.forEach((p,i) => {
@@ -1429,7 +1464,7 @@ function exportPlan() {
   const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `志愿方案_517分_${new Date().toISOString().slice(0,10)}.txt`;
+  a.download = `志愿方案_524分_${new Date().toISOString().slice(0,10)}.txt`;
   a.click();
   toast('已导出');
 }
