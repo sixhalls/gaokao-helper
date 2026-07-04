@@ -829,6 +829,8 @@ function subReqBadge(req) {
   return '';
 }
 
+let MY_SCORE = parseInt(localStorage.getItem('gk_score')) || 524;
+
 // 冲稳保判定(用2025实际分)
 // diff = 学校分 - MY_SCORE：>0冲，-12~0稳，<-12保
 function tierOf(score25) {
@@ -876,7 +878,6 @@ function yearTrendHTML(s) {
   return parts.join(' ');
 }
 
-let MY_SCORE = parseInt(localStorage.getItem('gk_score')) || 524;
 
 // 状态
 let sortMode = 'idx'; // idx | score | cost
@@ -1435,7 +1436,7 @@ function smartFill() {
   const stable = pool.filter(s=>s.tier==='stable');
   const safe = pool.filter(s=>s.tier==='safe');
 
-  for (let i = 0; i < Math.min(6, rush.length) && pos < 30; i++) planSlots[pos++] = toPlanItem(rush[i]);
+  for (let i = 0; i < Math.min(8, rush.length) && pos < 30; i++) planSlots[pos++] = toPlanItem(rush[i]);
   for (let i = 0; i < Math.min(10, stable.length) && pos < 30; i++) planSlots[pos++] = toPlanItem(stable[i]);
   for (let i = 0; i < Math.min(6, safe.length) && pos < 30; i++) planSlots[pos++] = toPlanItem(safe[i]);
 
