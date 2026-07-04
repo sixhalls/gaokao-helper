@@ -123,7 +123,7 @@ tailwind.config = {
         <p><span class="text-yellow-400 font-medium">核心策略：</span>30个平行志愿是30发子弹，一发都不能浪费。517分差特招线51分，够不到211，但能精准锁死省外公办二本的工科专业组。</p>
         <p><span class="text-yellow-400 font-medium">冲5-6所（525-537）：</span>省外公办工科的物化组，如重庆文理学院、贵州理工、沈阳建筑大学。录了赚到，没录不亏。</p>
         <p><span class="text-yellow-400 font-medium">稳8-10所（505-524）：</span>核心阵地。中部和珠三角工科强校的物化组，如湖北理工、长江师范、韶关学院。517分在这里最稳。</p>
-        <p><span class="text-yellow-400 font-medium">保5-6所（487-504）：</span>确保有书读。桂林理工、北部湾大学、新疆工程学院等，517进去基本没问题，且专业不差。</p>
+        <p><span class="text-yellow-400 font-medium">保5-6所（&lt;505）：</span>成都工业学院、广西科技大学、琼台师范学院、湖北民族大学等公办保底，517分进去有余量。铁保底菏泽学院、陇东学院，37分余量怎么都滑不掉。</p>
         <p><span class="text-yellow-400 font-medium">选科硬约束：</span>物化地不能报考"物化生"专业组，但897个"物化"专业组任你选。本工具已标注每校选科代码，红标"物化生"的慎选。</p>
         <p><span class="text-red-400 font-medium">铁律：</span>必须勾选"服从调剂"！一轮投档滑档=白考。先上车再换座。</p>
       </div>
@@ -701,15 +701,41 @@ const S = [
     why:"省内公办，08组物化527分，海洋方向与海南自贸港协同。离家近。",
     intro:"海南省属公办，三亚校区，海洋和水产为特色，省内认可。" },
 
-  { id:41, name:"赣南科技学院", prov:"江西", city:"赣州", type:"public", regionTag:"新一线",
-    tier:"stable",
-    s25:530, s24:523, s23:516, r25:35500,
+  { id:41, name:"湖北民族大学", prov:"湖北", city:"恩施", type:"public", regionTag:"中部",
+    s25:494, s24:487, s23:480, r25:44000,
     sub:["物理+化学"], subReq:"54",
-    majors:["机械工程","电气工程","计算机科学","冶金工程"],
-    fee:4800, empRate:0.82,
-    dim:{ emp:7, salary:5, industry:7, region:4, cost:10 },
-    why:"赣州稀土产业城，冶金方向对口。学费4800极低，530稳区间。",
-    intro:"江西省属工科院校，赣州稀土产业基地支撑冶金就业。" },
+    majors:["电气工程","计算机科学","食品科学","数学与应用数学"],
+    fee:5200, empRate:0.82,
+    dim:{ emp:7, salary:5, industry:5, region:3, cost:9 },
+    why:"恩施偏远但电气/计算机工科方向还行，54组494分差517有23分余量，极稳的保底。",
+    intro:"湖北省属民族类高校，位于恩施，电气工程和食品科学为工科骨干。" },
+
+  { id:42, name:"洛阳师范学院", prov:"河南", city:"洛阳", type:"public", regionTag:"中部",
+    s25:483, s24:476, s23:469, r25:45000,
+    sub:["物理+化学"], subReq:"54",
+    majors:["计算机科学","电子信息工程","化学","物理学"],
+    fee:5000, empRate:0.78,
+    dim:{ emp:6, salary:5, industry:5, region:5, cost:10 },
+    why:"洛阳历史文化名城但工科偏弱，54组483分比517低34分，铁保底。计算机方向在河南有就业基础。",
+    intro:"河南省属师范院校，计算机和化学为理科骨干，洛阳市产业发展有支撑。" },
+
+  { id:43, name:"陇东学院", prov:"甘肃", city:"庆阳", type:"public", regionTag:"西北",
+    s25:483, s24:476, s23:469, r25:45000,
+    sub:["物理+化学"], subReq:"54",
+    majors:["土木工程","电气工程","石油工程","机械工程"],
+    fee:4500, empRate:0.76,
+    dim:{ emp:5, salary:4, industry:5, region:2, cost:10 },
+    why:"石油工程对口长庆油田，土木电气也有基础。庆阳偏远但学费极低，铁保底。",
+    intro:"甘肃省属院校，石油工程对接长庆油田产业，庆阳能源基地支撑就业。" },
+
+  { id:44, name:"菏泽学院", prov:"山东", city:"菏泽", type:"public", regionTag:"环渤海",
+    s25:480, s24:473, s23:466, r25:46000,
+    sub:["物理+化学"], subReq:"54",
+    majors:["机械工程","电气工程","计算机科学","化学工程"],
+    fee:5000, empRate:0.77,
+    dim:{ emp:5, salary:4, industry:5, region:3, cost:10 },
+    why:"54组480分差517有37分余量，铁保底中的铁保底。机械电气有基础，菏泽在山东算偏远但学费低。",
+    intro:"山东省属公办院校，机械和化学工程为骨架，菏泽地区产业支撑有限。" },
 ];
 
 // ============================================================
@@ -735,10 +761,11 @@ function subReqBadge(req) {
 }
 
 // 冲稳保判定(用2025实际分)
+// diff = 学校分 - 517：>0冲，-12~0稳，<-12保
 function tierOf(score25) {
   const diff = score25 - 517;
   if (diff > 0 && diff <= 20) return 'rush';
-  if (diff >= -20 && diff <= 0) return 'stable';
+  if (diff >= -12 && diff <= 0) return 'stable';
   return 'safe';
 }
 S.forEach(s => { s.tier = tierOf(s.s25); });
@@ -965,6 +992,7 @@ function applyAdvisorPlan() {
   for (let i = 0; i < Math.min(6, safe.length) && pos < 30; i++)
     planSlots[pos++] = toPlanItem(safe[i]);
 
+  sortPlanSlots();
   savePlan();
   renderPlan();
   goTab('plan');
@@ -1169,6 +1197,19 @@ function renderCompareTable(schools) {
 // ============================================================
 //  志愿方案
 // ============================================================
+// 动态重排：冲→稳→保，同档内分数从高到低
+function sortPlanSlots() {
+  const tierOrder = { rush: 0, stable: 1, safe: 2 };
+  const filled = planSlots.filter(p => p !== null);
+  filled.sort((a, b) => {
+    const ta = tierOrder[a.tier] ?? 9, tb = tierOrder[b.tier] ?? 9;
+    if (ta !== tb) return ta - tb;       // 冲→稳→保
+    return b.s25 - a.s25;                // 同档分数高→低
+  });
+  planSlots = new Array(30).fill(null);
+  filled.forEach((p, i) => { planSlots[i] = p; });
+}
+
 function addPlan(id) {
   const s = S.find(x => x.id === id);
   if (!s) return;
@@ -1176,14 +1217,16 @@ function addPlan(id) {
   const idx = planSlots.findIndex(p => p === null);
   if (idx === -1) { toast('方案已满30席'); return; }
   planSlots[idx] = toPlanItem(s);
+  sortPlanSlots();
   savePlan();
   renderPlan();
   renderList();
-  toast(`${s.name} 已加入第${idx+1}志愿`);
+  toast(`${s.name} 已加入志愿`);
 }
 
 function removePlan(i) {
   planSlots[i] = null;
+  sortPlanSlots();
   savePlan();
   renderPlan();
   renderList();
@@ -1207,6 +1250,7 @@ function smartFill() {
   for (let i = 0; i < Math.min(10, stable.length) && pos < 30; i++) planSlots[pos++] = toPlanItem(stable[i]);
   for (let i = 0; i < Math.min(6, safe.length) && pos < 30; i++) planSlots[pos++] = toPlanItem(safe[i]);
 
+  sortPlanSlots();
   savePlan();
   renderPlan();
   renderList();
