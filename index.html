@@ -1799,35 +1799,41 @@ renderPlan();
 //  志愿分析
 // ============================================================
 
-// 解析输入，提取院校专业组——宽松模式，支持OCR/复制粘贴等各种格式
+// 解析输入，提取院校专业组——全局扫描模式，不依赖换行
 function parseVolunteers(text) {
-  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   const result = [];
 
-  for (const line of lines) {
-    let code = '', name = '';
-
-    // 1) 含6位数字代码：提取代码
-    const codeM = line.match(/(\d{6})/);
-    if (codeM) code = codeM[1];
-
-    // 2) 提取中文校名：找"大学"或"学院"关键字
-    const nameM = line.match(/([\u4e00-\u9fa5]+(?:大学|学院|师范|职业技术大学|职业大学|经贸职业大学))/);
-    if (nameM) name = nameM[1];
-
-    // 3) 如果没有代码但有校名，也能用
-    if (!code && !name) {
-      // 尝试匹配纯中文（连续2个以上汉字）
-      const cnM = line.match(/([\u4e00-\u9fa5]{2,})/);
-      if (cnM) name = cnM[1];
-    }
-
-    // 跳过纯数字行（如专业代码 04、11、10）和纯序号行
-    if (!code && !name) continue;
-    if (/^\d{1,2}$/.test(line.trim())) continue;  // 纯序号行跳过
-
-    result.push({ code, name, raw: line });
+  // 1) 全局提取 "6位代码+中文校名" 组合（最可靠）
+  const comboRe = /(\d{6})\s*([\u4e00-\u9fa5]+(?:大学|学院|职业技术大学|职业大学|经贸职业大学))/g;
+  let m;
+  while ((m = comboRe.exec(text)) !== null) {
+    result.push({ code: m[1], name: m[2], raw: m[0] });
   }
+
+  // 2) 如果组合没匹配到足够多，补充：只有代码的行
+  if (result.length < 3) {
+    const codeRe = /(?<![0-9])(\d{6})(?![0-9])/g;
+    const foundCodes = new Set(result.map(v => v.code));
+    let cm;
+    while ((cm = codeRe.exec(text)) !== null) {
+      if (!foundCodes.has(cm[1])) {
+        result.push({ code: cm[1], name: '', raw: cm[0] });
+        foundCodes.add(cm[1]);
+      }
+    }
+  }
+
+  // 3) 补充：只有校名没有代码的（如OCR丢失代码）
+  const nameRe = /([\u4e00-\u9fa5]{2,}(?:大学|学院))/g;
+  const foundNames = new Set(result.map(v => v.name));
+  let nm;
+  while ((nm = nameRe.exec(text)) !== null) {
+    if (!foundNames.has(nm[1]) && !/志愿|序号|专业|院校/.test(nm[1])) {
+      result.push({ code: '', name: nm[1], raw: nm[0] });
+      foundNames.add(nm[1]);
+    }
+  }
+
   return result;
 }
 
@@ -1930,7 +1936,7 @@ function runAnalysis() {
         riskHint = extra.risk;
         isVocational = false;
       } else {
-        // 职业本科特殊处理：关键词或代码前缀
+        // 职业本科特殊处理：关键词或代码前缀或原始文本
         const vocKeywords = ['职业大学', '职业技术大学', '经贸职业', '职业工', '职业技'];
         const isVocByName = v.name && vocKeywords.some(k => v.name.includes(k));
         const isVocByCode = v.code && (v.code.startsWith('60') || v.code.startsWith('0113') || v.code.startsWith('0116'));
