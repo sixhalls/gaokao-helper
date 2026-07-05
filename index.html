@@ -277,8 +277,14 @@ tailwind.config = {
       <h2 class="text-base font-bold">志愿分析</h2>
       <span class="text-[10px] text-gray-400">基于2025年投档线参考</span>
     </div>
-    <p class="text-xs text-gray-500 mb-3">粘贴从志愿填报系统复制的志愿信息，自动识别院校专业组代码。支持格式如: 142902潍坊学院(02) 或每行一个6位代码</p>
-    <textarea id="azInput" rows="6" placeholder="粘贴志愿内容，例如：&#10;1  142902潍坊学院(02)&#10;2  143202山东工商学院(02)&#10;...&#10;&#10;或每行一个代码：&#10;142902&#10;143202" class="w-full border rounded-lg p-3 text-xs leading-relaxed font-mono resize-y" oninput="onAzInput()"></textarea>
+    <p class="text-xs text-gray-500 mb-3">直接粘贴志愿截图的文字，自动识别。支持各种格式：带代码、纯校名、带序号、OCR乱码都能解析。例如：</p>
+    <div class="text-[10px] text-gray-400 mb-3 space-y-0.5 bg-gray-50 rounded p-2 font-mono">
+      <div>142902潍坊学院(02) 04</div>
+      <div>1 143202山东工商学院(02) 11、10</div>
+      <div>河北大学(03) 21、24</div>
+      <div>衡水学院</div>
+    </div>
+    <textarea id="azInput" rows="8" placeholder="粘贴志愿内容到这里...&#10;&#10;支持各种格式，例如：&#10;1  142902潍坊学院(02)  04&#10;2  143202山东工商学院(02)  11、10&#10;3  015103河北大学(03)  21、24、22、25、23&#10;...&#10;&#10;也支持纯校名：&#10;潍坊学院&#10;山东工商学院" class="w-full border rounded-lg p-3 text-xs leading-relaxed font-mono resize-y" oninput="onAzInput()"></textarea>
     <div class="flex gap-2 mt-2">
       <button onclick="runAnalysis()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-medium flex-1">分析</button>
       <button onclick="document.getElementById('azInput').value='';runAnalysis()" class="px-3 py-2 bg-gray-100 text-gray-600 rounded-lg text-xs">清空</button>
@@ -1793,40 +1799,75 @@ renderPlan();
 //  志愿分析
 // ============================================================
 
-// 解析输入，提取院校专业组
+// 解析输入，提取院校专业组——宽松模式，支持OCR/复制粘贴等各种格式
 function parseVolunteers(text) {
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   const result = [];
+
   for (const line of lines) {
-    // 匹配6位数字代码 + 可选的汉字名称
-    const m = line.match(/(\d{6})\s*([^\d\s][^\n]*)?/);
-    if (m) {
-      const code = m[1];
-      let name = (m[2] || '').replace(/^\s+/, '').replace(/\s+$/, '');
-      // 提取括号前的校名
-      const nm = name.match(/^([^\(（]+)/);
-      if (nm) name = nm[1].trim();
-      result.push({ code, name });
+    let code = '', name = '';
+
+    // 1) 含6位数字代码：提取代码
+    const codeM = line.match(/(\d{6})/);
+    if (codeM) code = codeM[1];
+
+    // 2) 提取中文校名：找"大学"或"学院"关键字
+    const nameM = line.match(/([\u4e00-\u9fa5]+(?:大学|学院|师范|职业技术大学|职业大学|经贸职业大学))/);
+    if (nameM) name = nameM[1];
+
+    // 3) 如果没有代码但有校名，也能用
+    if (!code && !name) {
+      // 尝试匹配纯中文（连续2个以上汉字）
+      const cnM = line.match(/([\u4e00-\u9fa5]{2,})/);
+      if (cnM) name = cnM[1];
     }
+
+    // 跳过纯数字行（如专业代码 04、11、10）和纯序号行
+    if (!code && !name) continue;
+    if (/^\d{1,2}$/.test(line.trim())) continue;  // 纯序号行跳过
+
+    result.push({ code, name, raw: line });
   }
   return result;
 }
 
-// 在S中匹配学校（按代码前4位+校名）
-function matchSchool(code, hintName) {
-  // 先按代码前4位+名称匹配（2026代码前4位=学校代码）
-  const schoolCode = code.substring(0, 4);
+// 模糊匹配学校名：支持简写、缺字
+function fuzzyMatchSchool(hintName) {
+  if (!hintName || hintName.length < 2) return null;
+
+  // 精确匹配
   for (const s of S) {
-    // 尝试用名称匹配
-    if (hintName && s.name === hintName) return s;
+    if (s.name === hintName) return s;
   }
-  // 名称没匹配到，尝试关键字模糊匹配
-  if (hintName) {
-    const key = hintName.replace(/大学|学院|师范|理工|工程|科技|工业/g, '').substring(0, 3);
+  // EXTRA库精确匹配
+  if (EXTRA_2025[hintName]) return null; // 后面处理
+
+  // 包含匹配：输入名包含在库中或库中包含输入名
+  for (const s of S) {
+    if (s.name.includes(hintName) || hintName.includes(s.name)) return s;
+  }
+
+  // 关键字模糊：去掉常见后缀后再比
+  const strip = n => n.replace(/大学|学院|师范|理工|工程|科技|工业|职业技术|职业|经贸|民族|农业|医科|医药|中医|建筑|财经|工商|医科/g, '');
+  const key = strip(hintName);
+  if (key.length >= 2) {
     for (const s of S) {
-      if (s.name.includes(key) && key.length >= 2) return s;
+      if (strip(s.name).includes(key) || key.includes(strip(s.name))) return s;
     }
   }
+
+  return null;
+}
+
+// 在S+EXTRA中匹配学校
+function matchSchool(code, hintName) {
+  // 先用名称匹配S库
+  let s = fuzzyMatchSchool(hintName);
+  if (s) return s;
+
+  // 代码前4位尝试匹配（海南学校代码对照）
+  // 这个不太可靠，因为2026代码和2025不同，跳过
+
   return null;
 }
 
@@ -1867,8 +1908,20 @@ function runAnalysis() {
       riskHint = s.why || '';
       isVocational = false;
     } else {
-      // 查EXTRA
-      const extra = EXTRA_2025[v.name];
+      // 查EXTRA（带模糊匹配）
+      let extra = null;
+      if (v.name && EXTRA_2025[v.name]) {
+        extra = EXTRA_2025[v.name];
+      } else if (v.name) {
+        // 模糊匹配EXTRA
+        for (const [k, val] of Object.entries(EXTRA_2025)) {
+          if (k.includes(v.name) || v.name.includes(k) || 
+              k.replace(/大学|学院|师范|理工|工程|科技|工业|职业技术|职业|经贸|民族/g,'').includes(
+                v.name.replace(/大学|学院|师范|理工|工程|科技|工业|职业技术|职业|经贸|民族/g,''))) {
+            extra = val; break;
+          }
+        }
+      }
       if (extra) {
         s25 = extra.s25;
         diff = s25 - MY_SCORE;
@@ -1877,27 +1930,34 @@ function runAnalysis() {
         riskHint = extra.risk;
         isVocational = false;
       } else {
-        // 职业本科特殊处理
-        if (v.name.includes('职业大学') || v.name.includes('职业') || v.code.startsWith('60') || v.code.startsWith('0113')) {
+        // 职业本科特殊处理：关键词或代码前缀
+        const vocKeywords = ['职业大学', '职业技术大学', '经贸职业', '职业工', '职业技'];
+        const isVocByName = v.name && vocKeywords.some(k => v.name.includes(k));
+        const isVocByCode = v.code && (v.code.startsWith('60') || v.code.startsWith('0113') || v.code.startsWith('0116'));
+        const isVocByRaw = v.raw && vocKeywords.some(k => v.raw.includes(k));
+        if (isVocByName || isVocByCode || isVocByRaw) {
           tier = 'safe_voc';
           diff = -999;
           s25 = null;
           majorHint = '职业本科';
           riskHint = '职业本科学历，毕业证标注"职业"，部分考公岗位受限';
           isVocational = true;
-        } else {
+        } else if (v.name) {
           tier = 'unknown';
           diff = null;
           s25 = null;
           majorHint = '未收录';
           riskHint = '';
           isVocational = false;
+        } else {
+          // 只有代码没有名称，跳过
+          return null;
         }
       }
     }
 
     return { no: i + 1, code: v.code, name: v.name, s25, diff, tier, majorHint, riskHint, isVocational, school: s };
-  });
+  }).filter(Boolean);
 
   renderAzSummary(analyzed);
   renderAzStructure(analyzed);
