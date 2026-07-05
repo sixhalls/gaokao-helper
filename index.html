@@ -75,6 +75,7 @@ tailwind.config = {
     <button onclick="goTab('list')" class="tab-btn px-4 py-2 text-xs font-medium text-gray-400" data-tab="list">筛选院校</button>
     <button onclick="goTab('compare')" class="tab-btn px-4 py-2 text-xs font-medium text-gray-400" data-tab="compare">对比</button>
     <button onclick="goTab('plan')" class="tab-btn px-4 py-2 text-xs font-medium text-gray-400" data-tab="plan">志愿方案</button>
+    <button onclick="goTab('analyze')" class="tab-btn px-4 py-2 text-xs font-medium text-gray-400" data-tab="analyze">志愿分析</button>
   </div>
 </header>
 
@@ -268,6 +269,54 @@ tailwind.config = {
   <button onclick="exportPlan()" class="w-full py-2.5 bg-gray-800 text-white rounded-xl text-sm font-medium">导出志愿方案(TXT)</button>
 </section>
 
+<!-- ====== TAB: 志愿分析 ====== -->
+<section id="tab-analyze" class="tab-panel hidden space-y-4">
+  <!-- 输入区 -->
+  <div class="bg-white rounded-xl border p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-base font-bold">志愿分析</h2>
+      <span class="text-[10px] text-gray-400">基于2025年投档线参考</span>
+    </div>
+    <p class="text-xs text-gray-500 mb-3">粘贴从志愿填报系统复制的志愿信息，自动识别院校专业组代码。支持格式如: 142902潍坊学院(02) 或每行一个6位代码</p>
+    <textarea id="azInput" rows="6" placeholder="粘贴志愿内容，例如：&#10;1  142902潍坊学院(02)&#10;2  143202山东工商学院(02)&#10;...&#10;&#10;或每行一个代码：&#10;142902&#10;143202" class="w-full border rounded-lg p-3 text-xs leading-relaxed font-mono resize-y" oninput="onAzInput()"></textarea>
+    <div class="flex gap-2 mt-2">
+      <button onclick="runAnalysis()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-medium flex-1">分析</button>
+      <button onclick="document.getElementById('azInput').value='';runAnalysis()" class="px-3 py-2 bg-gray-100 text-gray-600 rounded-lg text-xs">清空</button>
+    </div>
+  </div>
+
+  <!-- 总体评估 -->
+  <div id="azSummary" class="hidden bg-white rounded-xl border p-4">
+    <h3 class="text-sm font-bold mb-3">总体评估</h3>
+    <div id="azSummaryContent"></div>
+  </div>
+
+  <!-- 冲稳保结构 -->
+  <div id="azStructure" class="hidden bg-white rounded-xl border p-4">
+    <h3 class="text-sm font-bold mb-3">冲稳保结构</h3>
+    <div id="azStructChart" class="flex items-end gap-1 h-24 mb-2"></div>
+    <div id="azStructDetail" class="text-xs text-gray-600 leading-relaxed"></div>
+  </div>
+
+  <!-- 逐条分析 -->
+  <div id="azDetail" class="hidden bg-white rounded-xl border p-4">
+    <h3 class="text-sm font-bold mb-3">逐条分析</h3>
+    <div id="azDetailList" class="space-y-2"></div>
+  </div>
+
+  <!-- 风险提示 -->
+  <div id="azRisks" class="hidden bg-white rounded-xl border p-4">
+    <h3 class="text-sm font-bold mb-3">风险提示</h3>
+    <div id="azRiskList" class="space-y-2"></div>
+  </div>
+
+  <!-- 修改建议 -->
+  <div id="azSuggest" class="hidden bg-white rounded-xl border p-4">
+    <h3 class="text-sm font-bold mb-3">修改建议</h3>
+    <div id="azSuggestContent" class="text-xs text-gray-700 leading-relaxed space-y-2"></div>
+  </div>
+</section>
+
 </main>
 
 <!-- 手机底部导航 -->
@@ -287,6 +336,10 @@ tailwind.config = {
   <button onclick="goTab('plan')" class="mob-tab flex-1 py-2 text-center text-xs text-gray-400" data-tab="plan">
     <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
     <span>方案</span>
+  </button>
+  <button onclick="goTab('analyze')" class="mob-tab flex-1 py-2 text-center text-xs text-gray-400" data-tab="analyze">
+    <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <span>分析</span>
   </button>
 </nav>
 
@@ -1705,6 +1758,7 @@ function goTab(t) {
   if (t==='compare') renderCompare();
   if (t==='plan') renderPlan();
   if (t==='advisor') renderAdvisor();
+  if (t==='analyze') { /* 分析是按需触发 */ }
 }
 
 function toast(msg) {
@@ -1734,6 +1788,401 @@ updateScoreUI();
 renderAdvisor();
 renderList();
 renderPlan();
+
+// ============================================================
+//  志愿分析
+// ============================================================
+
+// 解析输入，提取院校专业组
+function parseVolunteers(text) {
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const result = [];
+  for (const line of lines) {
+    // 匹配6位数字代码 + 可选的汉字名称
+    const m = line.match(/(\d{6})\s*([^\d\s][^\n]*)?/);
+    if (m) {
+      const code = m[1];
+      let name = (m[2] || '').replace(/^\s+/, '').replace(/\s+$/, '');
+      // 提取括号前的校名
+      const nm = name.match(/^([^\(（]+)/);
+      if (nm) name = nm[1].trim();
+      result.push({ code, name });
+    }
+  }
+  return result;
+}
+
+// 在S中匹配学校（按代码前4位+校名）
+function matchSchool(code, hintName) {
+  // 先按代码前4位+名称匹配（2026代码前4位=学校代码）
+  const schoolCode = code.substring(0, 4);
+  for (const s of S) {
+    // 尝试用名称匹配
+    if (hintName && s.name === hintName) return s;
+  }
+  // 名称没匹配到，尝试关键字模糊匹配
+  if (hintName) {
+    const key = hintName.replace(/大学|学院|师范|理工|工程|科技|工业/g, '').substring(0, 3);
+    for (const s of S) {
+      if (s.name.includes(key) && key.length >= 2) return s;
+    }
+  }
+  return null;
+}
+
+// 扩展数据库：手动补充常见学校2025年54组分数（不在S中的）
+const EXTRA_2025 = {
+  '济宁医学院': { s25: 538, major: '临床医学/预防医学', risk: '医学类分数偏高，调剂可能到非医学专业' },
+  '天津职业技术师范大学': { s25: 539, major: '机械/电气/汽车', risk: '师范+技术双轨，部分专业偏师范' },
+  '兰州理工大学': { s25: 541, major: '机械/电气/材料', risk: '工科强校但区位偏远' },
+  '衡水学院': { s25: 525, major: '计算机/生物/化学', risk: '综合类，调剂可能到文科' },
+  '兰州文理学院': { s25: 501, major: '计算机/化工', risk: '综合类，调剂可能到文管' },
+  '河池学院': { s25: 523, major: '电子信息/机械', risk: '调剂可能到教育类' },
+  '西昌学院': { s25: 506, major: '机械/电气/土木', risk: '综合类，调剂可能到农学' },
+  '平顶山学院': { s25: 516, major: '电气/计算机', risk: '调剂可能到师范类' },
+  '青海理工学院': { s25: 511, major: '计算机/电气', risk: '原青海大学昆仑学院转设，新公办经验少' },
+  '太原学院': { s25: 520, major: '计算机/机械', risk: '综合类，调剂可能到文科' },
+};
+
+function onAzInput() { /* 实时预览不做什么，点分析才触发 */ }
+
+function runAnalysis() {
+  const text = document.getElementById('azInput').value;
+  const vols = parseVolunteers(text);
+  if (vols.length === 0) {
+    ['azSummary','azStructure','azDetail','azRisks','azSuggest'].forEach(id => document.getElementById(id).classList.add('hidden'));
+    return;
+  }
+
+  // 为每个志愿匹配分数和档位
+  const analyzed = vols.map((v, i) => {
+    let s = matchSchool(v.code, v.name);
+    let s25, tier, diff, majorHint, riskHint, isVocational;
+
+    if (s) {
+      s25 = s.s25;
+      diff = s25 - MY_SCORE;
+      tier = diff > 0 ? 'rush' : diff >= -12 ? 'stable' : 'safe';
+      majorHint = s.majors ? s.majors.slice(0, 3).join('/') : '';
+      riskHint = s.why || '';
+      isVocational = false;
+    } else {
+      // 查EXTRA
+      const extra = EXTRA_2025[v.name];
+      if (extra) {
+        s25 = extra.s25;
+        diff = s25 - MY_SCORE;
+        tier = diff > 0 ? 'rush' : diff >= -12 ? 'stable' : 'safe';
+        majorHint = extra.major;
+        riskHint = extra.risk;
+        isVocational = false;
+      } else {
+        // 职业本科特殊处理
+        if (v.name.includes('职业大学') || v.name.includes('职业') || v.code.startsWith('60') || v.code.startsWith('0113')) {
+          tier = 'safe_voc';
+          diff = -999;
+          s25 = null;
+          majorHint = '职业本科';
+          riskHint = '职业本科学历，毕业证标注"职业"，部分考公岗位受限';
+          isVocational = true;
+        } else {
+          tier = 'unknown';
+          diff = null;
+          s25 = null;
+          majorHint = '未收录';
+          riskHint = '';
+          isVocational = false;
+        }
+      }
+    }
+
+    return { no: i + 1, code: v.code, name: v.name, s25, diff, tier, majorHint, riskHint, isVocational, school: s };
+  });
+
+  renderAzSummary(analyzed);
+  renderAzStructure(analyzed);
+  renderAzDetail(analyzed);
+  renderAzRisks(analyzed);
+  renderAzSuggest(analyzed);
+
+  ['azSummary','azStructure','azDetail','azRisks','azSuggest'].forEach(id => document.getElementById(id).classList.remove('hidden'));
+}
+
+function tierLabel(t) {
+  return { rush: '冲', stable: '稳', safe: '保', safe_voc: '职', unknown: '?' }[t] || '?';
+}
+function tierColor(t) {
+  return { rush: 'text-red-500', stable: 'text-green-600', safe: 'text-blue-600', safe_voc: 'text-orange-500', unknown: 'text-gray-400' }[t] || 'text-gray-400';
+}
+function tierBg(t) {
+  return { rush: 'bg-red-100', stable: 'bg-green-100', safe: 'bg-blue-100', safe_voc: 'bg-orange-100', unknown: 'bg-gray-100' }[t] || 'bg-gray-100';
+}
+function tierBarColor(t) {
+  return { rush: 'bg-red-400', stable: 'bg-green-400', safe: 'bg-blue-400', safe_voc: 'bg-orange-400', unknown: 'bg-gray-300' }[t] || 'bg-gray-300';
+}
+
+function renderAzSummary(list) {
+  const rushCount = list.filter(v => v.tier === 'rush').length;
+  const stableCount = list.filter(v => v.tier === 'stable').length;
+  const safeCount = list.filter(v => v.tier === 'safe').length;
+  const vocCount = list.filter(v => v.tier === 'safe_voc').length;
+  const unknownCount = list.filter(v => v.tier === 'unknown').length;
+  const total = list.length;
+
+  // 评分逻辑
+  let score = 0, verdict = '', verdictColor = '';
+  // 冲占比30%以内 +8分, 30-40% +5, >40% +0
+  const rushPct = rushCount / total * 100;
+  if (rushPct <= 30) score += 8; else if (rushPct <= 40) score += 5;
+  // 保(普通本科)占比20%以上 +8分, 15-20% +5, <15% +0
+  const safePct = safeCount / total * 100;
+  if (safePct >= 20) score += 8; else if (safePct >= 15) score += 5;
+  // 职业本科不超过2个 +4
+  if (vocCount <= 2) score += 4;
+  // 没有未知学校 +4
+  if (unknownCount === 0) score += 4;
+  // 稳区间占30-40% +6
+  const stablePct = stableCount / total * 100;
+  if (stablePct >= 30 && stablePct <= 50) score += 6; else if (stablePct >= 20) score += 3;
+
+  if (score >= 22) { verdict = '结构合理'; verdictColor = 'text-green-600'; }
+  else if (score >= 16) { verdict = '结构偏颇，需调整'; verdictColor = 'text-yellow-600'; }
+  else { verdict = '结构失衡，风险大'; verdictColor = 'text-red-600'; }
+
+  document.getElementById('azSummaryContent').innerHTML = `
+    <div class="grid grid-cols-5 gap-2 text-center mb-3">
+      <div class="rounded-lg p-2 bg-gray-50">
+        <div class="text-lg font-bold">${total}</div>
+        <div class="text-[10px] text-gray-500">总志愿</div>
+      </div>
+      <div class="rounded-lg p-2 bg-red-50">
+        <div class="text-lg font-bold text-red-500">${rushCount}</div>
+        <div class="text-[10px] text-red-400">冲</div>
+      </div>
+      <div class="rounded-lg p-2 bg-green-50">
+        <div class="text-lg font-bold text-green-600">${stableCount}</div>
+        <div class="text-[10px] text-green-400">稳</div>
+      </div>
+      <div class="rounded-lg p-2 bg-blue-50">
+        <div class="text-lg font-bold text-blue-600">${safeCount}</div>
+        <div class="text-[10px] text-blue-400">保</div>
+      </div>
+      <div class="rounded-lg p-2 bg-orange-50">
+        <div class="text-lg font-bold text-orange-500">${vocCount}</div>
+        <div class="text-[10px] text-orange-400">职业本科</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 text-sm font-bold ${verdictColor}">
+      <span>综合评估:</span>
+      <span>${verdict}</span>
+      <span class="text-xs font-normal text-gray-400">(${score}/30分)</span>
+    </div>
+    ${unknownCount > 0 ? `<p class="text-xs text-orange-500 mt-1">有${unknownCount}所未识别学校，无法评估</p>` : ''}
+  `;
+}
+
+function renderAzStructure(list) {
+  const rushCount = list.filter(v => v.tier === 'rush').length;
+  const stableCount = list.filter(v => v.tier === 'stable').length;
+  const safeCount = list.filter(v => v.tier === 'safe').length;
+  const vocCount = list.filter(v => v.tier === 'safe_voc').length;
+  const total = list.length;
+
+  // 柱状图
+  const maxVal = Math.max(rushCount, stableCount, safeCount, vocCount, 1);
+  const bars = [
+    { label: '冲', count: rushCount, color: 'bg-red-400', h: Math.max(rushCount / maxVal * 80, 8) },
+    { label: '稳', count: stableCount, color: 'bg-green-400', h: Math.max(stableCount / maxVal * 80, 8) },
+    { label: '保', count: safeCount, color: 'bg-blue-400', h: Math.max(safeCount / maxVal * 80, 8) },
+    { label: '职本', count: vocCount, color: 'bg-orange-400', h: Math.max(vocCount / maxVal * 80, 8) },
+  ];
+  document.getElementById('azStructChart').innerHTML = bars.map(b => `
+    <div class="flex-1 flex flex-col items-center justify-end">
+      <span class="text-xs font-bold mb-1">${b.count}</span>
+      <div class="w-full ${b.color} rounded-t" style="height:${b.h}px"></div>
+      <span class="text-[10px] text-gray-500 mt-1">${b.label}</span>
+    </div>
+  `).join('');
+
+  // 建议结构
+  const target = { rush: '8', stable: '10-12', safe: '6-8' };
+  document.getElementById('azStructDetail').innerHTML = `
+    <div class="grid grid-cols-3 gap-2 text-center">
+      <div class="rounded p-1.5 ${rushCount > 8 ? 'bg-red-50' : 'bg-gray-50'}">
+        <div class="text-[10px] text-gray-400">冲(建议${target.rush})</div>
+        <div class="font-bold ${rushCount > 8 ? 'text-red-500' : ''}">实际${rushCount}</div>
+        ${rushCount > 8 ? '<div class="text-[10px] text-red-400">偏多</div>' : ''}
+      </div>
+      <div class="rounded p-1.5 bg-gray-50">
+        <div class="text-[10px] text-gray-400">稳(建议${target.stable})</div>
+        <div class="font-bold">实际${stableCount}</div>
+      </div>
+      <div class="rounded p-1.5 ${safeCount < 6 ? 'bg-red-50' : 'bg-gray-50'}">
+        <div class="text-[10px] text-gray-400">保(建议${target.safe})</div>
+        <div class="font-bold ${safeCount < 6 ? 'text-red-500' : ''}">实际${safeCount}${vocCount > 0 ? '+' + vocCount + '职' : ''}</div>
+        ${safeCount < 6 ? '<div class="text-[10px] text-red-400">偏少</div>' : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderAzDetail(list) {
+  document.getElementById('azDetailList').innerHTML = list.map(v => {
+    const tier = tierLabel(v.tier);
+    const tColor = tierColor(v.tier);
+    const tBg = tierBg(v.tier);
+    const diffStr = v.diff !== null ? (v.diff > 0 ? '+' + v.diff : '' + v.diff) : '?';
+    const diffColor = v.diff !== null ? (v.diff > 10 ? 'text-red-400' : v.diff > 0 ? 'text-yellow-500' : v.diff >= -12 ? 'text-green-500' : 'text-blue-500') : 'text-gray-400';
+
+    return `
+      <div class="flex items-start gap-2 p-2 rounded-lg ${tBg} border border-transparent">
+        <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
+          v.tier === 'rush' ? 'bg-red-200 text-red-700' :
+          v.tier === 'stable' ? 'bg-green-200 text-green-700' :
+          v.tier === 'safe_voc' ? 'bg-orange-200 text-orange-700' :
+          'bg-blue-200 text-blue-700'
+        }">${v.no}</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span class="font-bold text-sm">${v.name || v.code}</span>
+            <span class="text-[10px] px-1 rounded ${tBg} ${tColor} font-bold">${tier}</span>
+          </div>
+          <div class="flex items-center gap-2 text-[11px] text-gray-500 mt-0.5">
+            <span>${v.code}</span>
+            ${v.s25 != null ? `<span>25年:<strong class="text-gray-700">${v.s25}</strong></span>` : ''}
+            <span class="${diffColor} font-medium">${diffStr}分</span>
+          </div>
+          ${v.majorHint ? `<div class="text-[10px] text-gray-400 mt-0.5">${v.majorHint}</div>` : ''}
+        </div>
+        ${v.riskHint && (v.tier === 'rush' || v.tier === 'stable' || v.tier === 'safe_voc') ? `
+          <div class="flex-shrink-0 text-[10px] text-orange-500 max-w-[120px]">⚠ ${v.riskHint.substring(0, 30)}${v.riskHint.length > 30 ? '...' : ''}</div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function renderAzRisks(list) {
+  const risks = [];
+
+  // 1. 冲太多
+  const rushCount = list.filter(v => v.tier === 'rush').length;
+  if (rushCount > 10) {
+    risks.push({ level: 'high', msg: `冲区间${rushCount}所偏多，超过一半志愿录取概率极低。建议控制在8所以内，把名额让给保底。` });
+  } else if (rushCount > 8) {
+    risks.push({ level: 'mid', msg: `冲区间${rushCount}所，略偏多。建议8所左右。` });
+  }
+
+  // 2. 保太少
+  const safeCount = list.filter(v => v.tier === 'safe').length;
+  const vocCount = list.filter(v => v.tier === 'safe_voc').length;
+  const realSafe = safeCount;
+  if (realSafe < 6) {
+    risks.push({ level: 'high', msg: `普通本科保底仅${realSafe}所，滑档风险大！加上${vocCount}所职业本科共${realSafe + vocCount}所保底，建议普通本科保底至少6所。` });
+  } else if (realSafe < 8) {
+    risks.push({ level: 'mid', msg: `普通本科保底${realSafe}所，建议加到8所更安全。` });
+  }
+
+  // 3. 职业本科不宜替代普通本科保底
+  if (vocCount > 0) {
+    risks.push({ level: 'mid', msg: `${vocCount}所职业本科当保底，含金量不如普通本科。职业本科毕业证标注"职业"，部分考公岗位受限，只放最后兜底。` });
+  }
+
+  // 4. 稳区间分数集中
+  const stableVols = list.filter(v => v.tier === 'stable' && v.s25);
+  if (stableVols.length >= 3) {
+    const scores = stableVols.map(v => v.s25).sort((a, b) => a - b);
+    const range = scores[scores.length - 1] - scores[0];
+    if (range <= 8 && stableVols.length >= 5) {
+      risks.push({ level: 'mid', msg: `稳区间${stableVols.length}所分数集中在${scores[0]}-${scores[scores.length - 1]}（跨度仅${range}分），今年分数线若上浮5分以上，这些全变冲。建议拉宽到510-${MY_SCORE}分区间。` });
+    }
+  }
+
+  // 5. 远冲（差>20分）
+  const farRush = list.filter(v => v.diff !== null && v.diff > 20);
+  if (farRush.length >= 2) {
+    risks.push({ level: 'mid', msg: `${farRush.length}所远冲（超${MY_SCORE}分20+），录取概率极低。${farRush.map(v => v.name).join('、')}录取概率<5%，相当于浪费志愿位。` });
+  }
+
+  // 6. 同校多组
+  const nameCount = {};
+  list.forEach(v => { nameCount[v.name] = (nameCount[v.name] || 0) + 1; });
+  const dupes = Object.entries(nameCount).filter(([, c]) => c > 1);
+  if (dupes.length > 0) {
+    risks.push({ level: 'info', msg: `${dupes.map(([n, c]) => n + '填了' + c + '个组').join('，')}。不同专业组分别投档没问题，但若专业相近可能浪费志愿位。` });
+  }
+
+  // 7. 保底余量不足
+  const safeVols = list.filter(v => v.tier === 'safe' && v.s25);
+  if (safeVols.length > 0) {
+    const minDiff = Math.min(...safeVols.map(v => v.diff));
+    if (minDiff > -15) {
+      risks.push({ level: 'mid', msg: `最低保底学校分差仅${Math.abs(minDiff)}分，余量不够厚。建议至少有一所差20分以上的铁保底。` });
+    }
+  }
+
+  if (risks.length === 0) {
+    document.getElementById('azRiskList').innerHTML = '<p class="text-xs text-green-600">未发现明显风险，结构良好。</p>';
+    return;
+  }
+
+  const levelColor = { high: 'bg-red-100 border-red-300 text-red-700', mid: 'bg-yellow-100 border-yellow-300 text-yellow-700', info: 'bg-blue-100 border-blue-300 text-blue-700' };
+  const levelIcon = { high: '🔴', mid: '🟡', info: '🔵' };
+
+  document.getElementById('azRiskList').innerHTML = risks.map(r => `
+    <div class="rounded-lg border p-2.5 text-xs ${levelColor[r.level]}">
+      <span>${levelIcon[r.level]}</span> ${r.msg}
+    </div>
+  `).join('');
+}
+
+function renderAzSuggest(list) {
+  const rushCount = list.filter(v => v.tier === 'rush').length;
+  const stableCount = list.filter(v => v.tier === 'stable').length;
+  const safeCount = list.filter(v => v.tier === 'safe').length;
+  const suggestions = [];
+
+  // 找出数据库中不在志愿列表中的保底学校建议
+  const usedNames = new Set(list.map(v => v.name));
+  const availSafe = S.filter(s => s.tier === 'safe' && !usedNames.has(s.name)).sort((a, b) => a.s25 - b.s25);
+  const availStable = S.filter(s => s.tier === 'stable' && !usedNames.has(s.name) && s.s25 < MY_SCORE - 3).sort((a, b) => b.s25 - a.s25);
+
+  if (rushCount > 8) {
+    suggestions.push(`<strong>砍冲区：</strong>冲${rushCount}所太多，砍掉${rushCount - 8}所远冲（分差>15分的优先砍）。省出名额给保底。`);
+  }
+
+  if (safeCount < 6) {
+    const add = availSafe.slice(0, 6 - safeCount);
+    if (add.length > 0) {
+      suggestions.push(`<strong>加保底：</strong>建议增加${add.length}所普通本科保底：${add.map(s => `${s.name}(${s.s25})`).join('、')}。这些学校分数余量${add.map(s => Math.abs(s.s25 - MY_SCORE)).join('/')}分，滑档概率极低。`);
+    }
+  }
+
+  if (stableCount < 8 && availStable.length > 0) {
+    const add = availStable.slice(0, 3);
+    suggestions.push(`<strong>补稳区：</strong>稳区间可加${add.map(s => `${s.name}(${s.s25})`).join('、')}，拉宽分数覆盖。`);
+  }
+
+  const farRush = list.filter(v => v.diff !== null && v.diff > 20);
+  if (farRush.length >= 2) {
+    suggestions.push(`<strong>远冲取舍：</strong>${farRush.map(v => v.name).join('、')}超你${farRush[0].diff}+分，录取概率<5%。留1-2所博运气即可，其余换保底。`);
+  }
+
+  // 调剂风险高的学校
+  const adjustRisk = list.filter(v => v.school && v.school.why && (v.school.why.includes('调剂') || v.school.why.includes('土木') || v.school.why.includes('环境')));
+  if (adjustRisk.length > 0) {
+    suggestions.push(`<strong>调剂风险：</strong>${adjustRisk.map(v => v.name).join('、')}调剂可能到冷门专业，接受再填。`);
+  }
+
+  if (suggestions.length === 0) {
+    suggestions.push('当前方案结构合理，无明显调整需要。祝录取顺利！');
+  }
+
+  // 推荐结构
+  suggestions.unshift(`<strong>推荐结构（30席）：</strong>冲8 + 稳10-12 + 保6-8 + 职业本科2（最后兜底）`);
+
+  document.getElementById('azSuggestContent').innerHTML = suggestions.map(s => `<p>${s}</p>`).join('');
+}
 </script>
 </body>
 </html>
