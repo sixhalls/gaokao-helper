@@ -22968,8 +22968,8 @@ function showDetail(id) {
     </div>
 
     <div>
-      <h4 class="text-xs font-bold mb-1">学费 & 就业</h4>
-      <div class="grid grid-cols-2 gap-2 text-xs">
+      <h4 class="text-xs font-bold mb-1">学费 & 就业 & 排名</h4>
+      <div class="grid grid-cols-3 gap-2 text-xs">
         <div class="bg-gray-50 rounded-lg p-2">
           <div class="text-gray-400">学费/年</div>
           <div class="font-semibold ${s.fee>10000?'text-red-600':'text-green-600'}">${s.fee>=10000?(s.fee/10000)+'万':s.fee+'元'}</div>
@@ -22977,6 +22977,22 @@ function showDetail(id) {
         <div class="bg-gray-50 rounded-lg p-2">
           <div class="text-gray-400">就业率</div>
           <div class="font-semibold">${s.empRate?(s.empRate*100).toFixed(0)+String.fromCharCode(37):"暂无"}</div>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-2">
+          <div class="text-gray-400">升学率</div>
+          <div class="font-semibold">${s.gradRate?(s.gradRate*100).toFixed(0)+String.fromCharCode(37):"暂无"}</div>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-2">
+          <div class="text-gray-400">软科排名</div>
+          <div class="font-semibold ${s.ruanka&&s.ruanka<=200?'text-blue-600':s.ruanka&&s.ruanka<=400?'text-green-600':'text-gray-600'}">${s.ruanka?('第'+Math.abs(s.ruanka)+(s.ruanka<0?'(估)':'')):"暂无"}</div>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-2">
+          <div class="text-gray-400">段位</div>
+          <div class="font-semibold ${s.duan==='A'||s.duan==='B'?'text-red-600':s.duan==='C'||s.duan==='D'?'text-green-600':'text-gray-600'}">${s.duan?s.duan+'段':"暂无"}</div>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-2">
+          <div class="text-gray-400">科目组</div>
+          <div class="font-semibold text-blue-600">${s.groupKey||"-"}</div>
         </div>
       </div>
     </div>
@@ -23063,6 +23079,9 @@ function renderCompare() {
         <div class="flex justify-between"><span>2025分</span><span class="font-semibold">${s.s25}</span></div>
         <div class="flex justify-between"><span>学费</span><span class="${s.fee>10000?'text-red-500':'text-green-600'} font-semibold">${s.fee>=10000?(s.fee/10000)+'万/年':s.fee+'元/年'}</span></div>
         <div class="flex justify-between"><span>就业率</span><span>${s.empRate?(s.empRate*100).toFixed(0)+String.fromCharCode(37):"暂无"}</span></div>
+        <div class="flex justify-between"><span>升学率</span><span>${s.gradRate?(s.gradRate*100).toFixed(0)+String.fromCharCode(37):"暂无"}</span></div>
+        <div class="flex justify-between"><span>软科排名</span><span>${s.ruanka?('第'+Math.abs(s.ruanka)+(s.ruanka<0?'(估)':'')):"暂无"}</span></div>
+        <div class="flex justify-between"><span>段位</span><span>${s.duan?s.duan+'段':'-'}</span></div>
       </div>
     </div>`;
   }).join('');
@@ -23100,6 +23119,10 @@ function renderCompareTable(schools) {
     { label:'2024投档分', key: s => s.s24 ?? '-' },
     { label:'学费/年', key: s => `<span class="${s.fee>10000?'text-red-500':'text-green-600'}">${s.fee>=10000?(s.fee/10000)+'万':s.fee+'元'}</span>` },
     { label:'就业率', key: s => s.empRate?(s.empRate*100).toFixed(0)+String.fromCharCode(37):"暂无" },
+    { label:'升学率', key: s => s.gradRate?(s.gradRate*100).toFixed(0)+String.fromCharCode(37):"暂无" },
+    { label:'软科排名', key: s => s.ruanka?('第'+Math.abs(s.ruanka)+(s.ruanka<0?'(估)':'')):"暂无" },
+    { label:'段位', key: s => s.duan?s.duan+'段':'-' },
+    { label:'科目组', key: s => s.groupKey||'-' },
     { label:'就业率维度', key: s => s.dim.emp },
     { label:'薪资潜力维度', key: s => s.dim.salary },
     { label:'行业景气维度', key: s => s.dim.industry },
