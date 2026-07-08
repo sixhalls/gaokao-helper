@@ -22664,7 +22664,7 @@ function getFiltered() {
     const duanVal = document.getElementById('fDuan')?.value || '';
     const groupVal = document.getElementById('fGroup')?.value || '';
     if (empMin > 0 && (!s.empRate || s.empRate < empMin)) return false;
-    if (rankMax > 0 && (!s.ruanka || s.ruanka > rankMax)) return false;
+    if (rankMax > 0 && (!s.ruanke || s.ruanke > rankMax)) return false;
     if (duanVal && s.duan !== duanVal) return false;
     if (groupVal && s.groupKey !== groupVal) return false;
     // 搜索过滤
@@ -22780,7 +22780,7 @@ function renderAdvisor() {
     const duanVal = document.getElementById('fDuan')?.value || '';
     const groupVal = document.getElementById('fGroup')?.value || '';
     if (empMin > 0 && (!s.empRate || s.empRate < empMin)) return false;
-    if (rankMax > 0 && (!s.ruanka || s.ruanka > rankMax)) return false;
+    if (rankMax > 0 && (!s.ruanke || s.ruanke > rankMax)) return false;
     if (duanVal && s.duan !== duanVal) return false;
     if (groupVal && s.groupKey !== groupVal) return false;
     return true;
@@ -22870,7 +22870,7 @@ function applyAdvisorPlan() {
     const duanVal = document.getElementById('fDuan')?.value || '';
     const groupVal = document.getElementById('fGroup')?.value || '';
     if (empMin > 0 && (!s.empRate || s.empRate < empMin)) return false;
-    if (rankMax > 0 && (!s.ruanka || s.ruanka > rankMax)) return false;
+    if (rankMax > 0 && (!s.ruanke || s.ruanke > rankMax)) return false;
     if (duanVal && s.duan !== duanVal) return false;
     if (groupVal && s.groupKey !== groupVal) return false;
     return true;
@@ -22955,7 +22955,7 @@ function showDetail(id) {
             const color24 = d24_25 > 0 ? 'text-red-500' : d24_25 < 0 ? 'text-green-600' : 'text-gray-400';
             return `<tr><td>2024</td><td class="text-right font-semibold">${s.s24}</td><td class="text-right text-gray-400">-</td><td class="text-right ${color24}">${arrow24}${Math.abs(d24_25)}</td></tr>`;
           })() : `<tr><td>2024</td><td class="text-right text-gray-400">-</td><td class="text-right text-gray-400">-</td><td class="text-right text-orange-500">2025新增</td></tr>`}
-          <tr class="bg-blue-50"><td class="font-semibold">2025</td><td class="text-right font-bold text-blue-600">${s.s25}</td><td class="text-right text-gray-500">${s.r25.toLocaleString()}</td><td class="text-right text-gray-400">实际</td></tr>
+          <tr class="bg-blue-50"><td class="font-semibold">2025</td><td class="text-right font-bold text-blue-600">${s.s25}</td><td class="text-right text-gray-500">${s.r25!=null?s.r25.toLocaleString():'-'}</td><td class="text-right text-gray-400">实际</td></tr>
         </table>
         ${s.s24 != null ? (() => {
           const d = s.s25 - s.s24;
@@ -22984,7 +22984,7 @@ function showDetail(id) {
         </div>
         <div class="bg-gray-50 rounded-lg p-2">
           <div class="text-gray-400">软科排名</div>
-          <div class="font-semibold ${s.ruanka&&s.ruanka<=200?'text-blue-600':s.ruanka&&s.ruanka<=400?'text-green-600':'text-gray-600'}">${s.ruanka?('第'+Math.abs(s.ruanka)+(s.ruanka<0?'(估)':'')):"暂无"}</div>
+          <div class="font-semibold ${s.ruanke&&s.ruanke<=200?'text-blue-600':s.ruanke&&s.ruanke<=400?'text-green-600':'text-gray-600'}">${s.ruanke?('第'+Math.abs(s.ruanke)+(s.ruanke<0?'(估)':'')):"暂无"}</div>
         </div>
         <div class="bg-gray-50 rounded-lg p-2">
           <div class="text-gray-400">段位</div>
@@ -23080,7 +23080,7 @@ function renderCompare() {
         <div class="flex justify-between"><span>学费</span><span class="${s.fee>10000?'text-red-500':'text-green-600'} font-semibold">${s.fee>=10000?(s.fee/10000)+'万/年':s.fee+'元/年'}</span></div>
         <div class="flex justify-between"><span>就业率</span><span>${s.empRate?(s.empRate*100).toFixed(0)+String.fromCharCode(37):"暂无"}</span></div>
         <div class="flex justify-between"><span>升学率</span><span>${s.gradRate?(s.gradRate*100).toFixed(0)+String.fromCharCode(37):"暂无"}</span></div>
-        <div class="flex justify-between"><span>软科排名</span><span>${s.ruanka?('第'+Math.abs(s.ruanka)+(s.ruanka<0?'(估)':'')):"暂无"}</span></div>
+        <div class="flex justify-between"><span>软科排名</span><span>${s.ruanke?('第'+Math.abs(s.ruanke)+(s.ruanke<0?'(估)':'')):"暂无"}</span></div>
         <div class="flex justify-between"><span>段位</span><span>${s.duan?s.duan+'段':'-'}</span></div>
       </div>
     </div>`;
@@ -23120,7 +23120,7 @@ function renderCompareTable(schools) {
     { label:'学费/年', key: s => `<span class="${s.fee>10000?'text-red-500':'text-green-600'}">${s.fee>=10000?(s.fee/10000)+'万':s.fee+'元'}</span>` },
     { label:'就业率', key: s => s.empRate?(s.empRate*100).toFixed(0)+String.fromCharCode(37):"暂无" },
     { label:'升学率', key: s => s.gradRate?(s.gradRate*100).toFixed(0)+String.fromCharCode(37):"暂无" },
-    { label:'软科排名', key: s => s.ruanka?('第'+Math.abs(s.ruanka)+(s.ruanka<0?'(估)':'')):"暂无" },
+    { label:'软科排名', key: s => s.ruanke?('第'+Math.abs(s.ruanke)+(s.ruanke<0?'(估)':'')):"暂无" },
     { label:'段位', key: s => s.duan?s.duan+'段':'-' },
     { label:'科目组', key: s => s.groupKey||'-' },
     { label:'就业率维度', key: s => s.dim.emp },
@@ -23186,7 +23186,7 @@ function smartFill() {
     const duanVal = document.getElementById('fDuan')?.value || '';
     const groupVal = document.getElementById('fGroup')?.value || '';
     if (empMin > 0 && (!s.empRate || s.empRate < empMin)) return false;
-    if (rankMax > 0 && (!s.ruanka || s.ruanka > rankMax)) return false;
+    if (rankMax > 0 && (!s.ruanke || s.ruanke > rankMax)) return false;
     if (duanVal && s.duan !== duanVal) return false;
     if (groupVal && s.groupKey !== groupVal) return false;
     return true;
